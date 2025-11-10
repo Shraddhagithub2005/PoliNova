@@ -25,6 +25,10 @@ import UserProfile from "./landing_page/VictimDashboard/UserProfile";
 import Rules_Regulations from "./landing_page/VictimDashboard/ComplaintForm/Rules_Regulations";
 import MandatoryList from "./landing_page/VictimDashboard/ComplaintForm/MandatoryList";
 import ComplaintForm from "./landing_page/VictimDashboard/ComplaintForm/ComplaintForm";
+import ComplaintDetails from "./landing_page/PoliceDashboard/ComplaintDetails";
+
+
+
 
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
@@ -32,6 +36,7 @@ root.render(
   <BrowserRouter>
     <Navbar />
     <Routes>
+
       {/* Main pages */}
       <Route path="/" element={<HomePage />} />
       <Route path="/AboutPage" element={<AboutPage />} />
@@ -43,6 +48,7 @@ root.render(
       <Route path="/LoginVictim" element={<LoginVictim />} />
       <Route path="/PoliceDashboard" element={<PoliceDashboard />} />
       <Route path="/NotFound" element={<NotFound />} />
+      <Route path="/police/complaint/:complaint_id" element={<ComplaintDetails />} />
       
         
 

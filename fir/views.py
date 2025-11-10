@@ -4,17 +4,19 @@ import pyotp
 import qrcode
 import io
 import re
+import string
 from django.core.mail import send_mail
 from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
 from django.conf import settings
 from django.contrib.auth.hashers import check_password, make_password
-from .models import Victim, EmailVerification, PhoneVerification
+from .models import Victim, EmailVerification, PhoneVerification, Complaint
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 from .serializers import VictimSerializer
+
 
 # ------------------- EMAIL VERIFICATION -------------------
 @csrf_exempt
@@ -23,10 +25,12 @@ def send_verification_email(request):
         try:
             data = json.loads(request.body)
             email = data.get("email")
+
             if not email:
                 return JsonResponse({"error": "Email is required"}, status=400)
 
             otp = str(random.randint(100000, 999999))
+
             EmailVerification.objects.update_or_create(
                 email=email,
                 defaults={"token": otp, "created_at": timezone.now()},
@@ -39,10 +43,11 @@ def send_verification_email(request):
                 recipient_list=[email],
                 fail_silently=False,
             )
+
             return JsonResponse({"message": "Verification code sent successfully!"})
 
         except Exception as e:
-            print("❌ Error sending email:", e)
+            print(" Error sending email:", e)
             return JsonResponse({"error": str(e)}, status=500)
 
     return JsonResponse({"error": "Invalid request"}, status=400)
@@ -55,6 +60,10 @@ def verify_email(request):
             data = json.loads(request.body)
             email = data.get("email")
             otp = data.get("otp")
+            aadhaar = data.get("aadhaar", "000000000000")
+            phone = data.get("phone", "")
+            name = data.get("name", "")
+
             if not email or not otp:
                 return JsonResponse({"error": "Email and OTP are required"}, status=400)
 
@@ -62,16 +71,33 @@ def verify_email(request):
             if not record:
                 return JsonResponse({"error": "Invalid or expired OTP"}, status=400)
 
-            victim, created = Victim.objects.get_or_create(email=email)
+            victim, created = Victim.objects.get_or_create(
+                email=email,
+                defaults={
+                    "aadhaar": aadhaar,
+                    "phone": phone,
+                    "first_name": name.split()[0] if name else "",
+                    "last_name": " ".join(name.split()[1:]) if name and len(name.split()) > 1 else "",
+                    "address": "",
+                    "city": "",
+                    "state": "",
+                    "pincode": "",
+                    "country": "",
+                },
+            )
+
             victim.is_verified = True
-            victim.created_at = timezone.now()
             victim.save()
             record.delete()
 
-            return JsonResponse({"message": "Email verified successfully!"})
+            return JsonResponse({
+                "message": "Email verified successfully!",
+                "victim_id": victim.id,
+                "is_new": created
+            })
 
         except Exception as e:
-            print("❌ OTP verification error:", e)
+            print(" OTP verification error:", e)
             return JsonResponse({"error": str(e)}, status=500)
 
     return JsonResponse({"error": "Invalid request"}, status=400)
@@ -118,9 +144,9 @@ def verify_otp(request):
     if totp.verify(otp):
         obj.verified = True
         obj.save()
-        return JsonResponse({"message": "✅ Phone verified successfully!"})
+        return JsonResponse({"message": " Phone verified successfully!"})
     else:
-        return JsonResponse({"error": "❌ Invalid or expired OTP"}, status=400)
+        return JsonResponse({"error": " Invalid or expired OTP"}, status=400)
 
 
 # ------------------- SIGNUP -------------------
@@ -136,14 +162,13 @@ def signup(request):
             if not email or not phone or not password:
                 return JsonResponse({"error": "Email, phone, and password are required"}, status=400)
 
-            # Password validation
             if len(password) < 8 or not re.search(r"[A-Z]", password) or not re.search(r"[a-z]", password) \
                or not re.search(r"\d", password) or not re.search(r"[!@#$%^&*(),.?\":{}|<>]", password):
                 return JsonResponse({
                     "error": "Password must be at least 8 characters long, include upper and lower case letters, a number, and a special character."
                 }, status=400)
 
-            victim = Victim.objects.filter(email=email, is_verified=True).first()
+            victim = Victim.objects.filter(email=email).first()
             if not victim:
                 return JsonResponse({"error": "Please verify your email first."}, status=400)
 
@@ -151,12 +176,19 @@ def signup(request):
             if not phone_record:
                 return JsonResponse({"error": "Please verify your phone first."}, status=400)
 
-            # Update victim info
+            existing_phone = Victim.objects.filter(phone=phone).exclude(id=victim.id).first()
+            if existing_phone:
+                return JsonResponse({"error": "This phone number is already linked to another account."}, status=400)
+
+            existing_aadhaar = Victim.objects.filter(aadhaar=data.get("aadhaar")).exclude(id=victim.id).first()
+            if existing_aadhaar:
+                return JsonResponse({"error": "This Aadhaar number is already linked to another account."}, status=400)
+
             victim.first_name = data.get("firstName")
             victim.last_name = data.get("lastName")
             victim.phone = phone
             victim.aadhaar = data.get("aadhaar")
-            victim.address = data.get("address")  # JSONField
+            victim.address = data.get("address")
             victim.city = data.get("city")
             victim.state = data.get("state")
             victim.pincode = data.get("pincode")
@@ -169,7 +201,7 @@ def signup(request):
             return JsonResponse({"message": "Signup successful!", "id": victim.id})
 
         except Exception as e:
-            print("❌ Signup error:", e)
+            print("Signup error:", e)
             return JsonResponse({"error": str(e)}, status=500)
 
     return JsonResponse({"error": "Invalid request"}, status=400)
@@ -202,7 +234,7 @@ def login_victim(request):
                 return JsonResponse({"error": "Invalid password"}, status=401)
 
         except Exception as e:
-            print("❌ Login error:", e)
+            print(" Login error:", e)
             return JsonResponse({"error": str(e)}, status=500)
 
     return JsonResponse({"error": "Invalid request method"}, status=405)
@@ -266,11 +298,11 @@ def save_profile(request):
                 return JsonResponse(serializer.errors, status=400)
 
     except Exception as e:
-        print("❌ Save profile error:", e)
+        print(" Save profile error:", e)
         return JsonResponse({"error": str(e)}, status=500)
 
 
-# ------------------- POLICE LOGIN (NEW) -------------------
+# ------------------- POLICE LOGIN -------------------
 @csrf_exempt
 def login_police(request):
     if request.method == "POST":
@@ -279,7 +311,6 @@ def login_police(request):
             email = data.get("email")
             password = data.get("password")
 
-            # ✅ Fixed Police Credentials
             FIXED_EMAIL = "police@smartfir.com"
             FIXED_PASSWORD = "Police@123"
 
@@ -289,7 +320,107 @@ def login_police(request):
                 return JsonResponse({"error": "Invalid Police ID or Password"}, status=401)
 
         except Exception as e:
-            print("❌ Police Login Error:", e)
+            print(" Police Login Error:", e)
             return JsonResponse({"error": str(e)}, status=500)
 
     return JsonResponse({"error": "Invalid request method"}, status=405)
+
+@csrf_exempt
+def save_complaint(request):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body.decode("utf-8"))
+
+            complaint = Complaint(
+                complaint_id=data.get("complaint_id"),
+                victim_email=data.get("victim_email"),
+                category=data.get("category"),
+                subCategory=data.get("subCategory"),
+                description=data.get("description"),
+                location=data.get("location"),
+                date=data.get("date"),
+                time=data.get("time"),
+                delay=data.get("delay", "No"),  # optional field
+                created_at=timezone.now(),
+            )
+
+            complaint.save()
+            return JsonResponse({"message": "Complaint saved successfully!"}, status=200)
+
+        except Exception as e:
+            print("❌ Complaint save error:", str(e))
+            return JsonResponse({"error": str(e)}, status=500)
+
+    return JsonResponse({"error": "Invalid request method"}, status=400)
+
+@csrf_exempt
+def complaint_list(request):
+    if request.method == "GET":
+        try:
+            complaints = Complaint.objects.all().values(
+                "complaint_id",
+                "category",
+                "description",
+                "date",
+                "time",
+                "location",
+                "delay",
+                "victim_email",
+                "created_at",
+            ).order_by("-created_at")
+
+            return JsonResponse(list(complaints), safe=False, status=200)
+        except Exception as e:
+            print("❌ Complaint list error:", e)
+            return JsonResponse({"error": str(e)}, status=500)
+    else:
+        return JsonResponse({"error": "Invalid request"}, status=405)
+
+
+@csrf_exempt
+def update_complaint_status(request, complaint_id):
+    if request.method == "PUT":
+        try:
+            data = json.loads(request.body)
+            new_status = data.get("status")
+
+            if new_status not in ["Pending", "Accepted", "Rejected"]:
+                return JsonResponse({"error": "Invalid status value"}, status=400)
+
+            complaint = Complaint.objects.get(id=complaint_id)
+            complaint.status = new_status
+            complaint.save()
+
+            return JsonResponse({"message": "Complaint status updated successfully"}, status=200)
+        except Complaint.DoesNotExist:
+            return JsonResponse({"error": "Complaint not found"}, status=404)
+        except Exception as e:
+            print("❌ Update complaint status error:", e)
+            return JsonResponse({"error": str(e)}, status=500)
+
+    return JsonResponse({"error": "Invalid request method"}, status=405)
+
+@csrf_exempt
+def complaint_detail(request, complaint_id):
+    if request.method == "GET":
+        try:
+            from django.forms.models import model_to_dict
+            complaint = Complaint.objects.get(complaint_id=complaint_id)
+            data = model_to_dict(complaint)
+
+            # If you have a Victim model linked, include it
+            if hasattr(complaint, "victim"):
+                data["victim_name"] = complaint.victim.full_name
+                data["victim_email"] = complaint.victim.email
+                data["victim_phone"] = complaint.victim.phone
+                data["victim_address"] = complaint.victim.address
+
+            return JsonResponse(data, status=200)
+        except Complaint.DoesNotExist:
+            return JsonResponse({"error": "Complaint not found"}, status=404)
+        except Exception as e:
+            print("❌ Complaint detail error:", e)
+            return JsonResponse({"error": str(e)}, status=500)
+    return JsonResponse({"error": "Invalid request"}, status=405)
+
+

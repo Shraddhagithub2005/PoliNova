@@ -5,10 +5,13 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 function ComplaintForm() {
   const [activeTab, setActiveTab] = useState("incident");
   const [text, setText] = useState("");
+  const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const maxChars = 1500;
 
-  // ✅ Added state for incident details
   const [incidentDetails, setIncidentDetails] = useState({
+    victim_email: "",
     category: "",
     subCategory: "",
     date: "",
@@ -29,19 +32,104 @@ function ComplaintForm() {
     }
   };
 
-  // ✅ Common handler for select and input fields
   const handleChange = (e) => {
     const { name, value } = e.target;
     setIncidentDetails({ ...incidentDetails, [name]: value });
   };
 
-  // ✅ Save & Next handler
+  const validateForm = () => {
+    if (!incidentDetails.victim_email.trim()) return "Please enter your email.";
+    if (!incidentDetails.category) return "Please select a complaint category.";
+    if (!incidentDetails.subCategory) return "Please select a sub-category.";
+    if (!incidentDetails.date) return "Please select the date of the incident.";
+    if (!incidentDetails.location) return "Please select where the incident occurred.";
+    if (text.trim().length < 200)
+      return `Description should be at least 200 characters. Currently: ${text.trim().length}`;
+    return null;
+  };
+
+  // ✅ Convert 12-hour format to 24-hour format before sending
+  const convertTo24Hour = (timeStr) => {
+    try {
+      const [time, modifier] = timeStr.split(" ");
+      let [hours, minutes] = time.split(":");
+      hours = parseInt(hours);
+      if (modifier.toLowerCase() === "pm" && hours !== 12) hours += 12;
+      if (modifier.toLowerCase() === "am" && hours === 12) hours = 0;
+      return `${hours.toString().padStart(2, "0")}:${minutes}`;
+    } catch {
+      return timeStr; // fallback
+    }
+  };
+
   const handleSaveNext = () => {
+    const validationError = validateForm();
+    if (validationError) {
+      setError(validationError);
+      return;
+    }
+    setError("");
     setActiveTab("preview");
+  };
+
+  const handleSubmit = async () => {
+    const validationError = validateForm();
+    if (validationError) {
+      setError(validationError);
+      return;
+    }
+    setError("");
+    setLoading(true);
+
+    try {
+      let time12hr = `${incidentDetails.hour}:${incidentDetails.minute} ${incidentDetails.period}`;
+      let time24hr = convertTo24Hour(time12hr); // ✅ convert before sending
+
+      const payload = {
+        ...incidentDetails,
+        description: text,
+        time: time24hr, // ✅ fixed format for backend
+      };
+
+      const res = await fetch("http://127.0.0.1:8000/api/victim/complaint/save/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        setSubmitted(true);
+        setIncidentDetails({
+          victim_email: "",
+          category: "",
+          subCategory: "",
+          date: "",
+          hour: "",
+          minute: "",
+          period: "AM",
+          delay: "No",
+          location: "",
+          description: "",
+        });
+        setText("");
+        setActiveTab("incident");
+        setTimeout(() => setSubmitted(false), 4000);
+      } else {
+        setError(data.error || "Failed to submit complaint.");
+      }
+    } catch (err) {
+      console.error(err);
+      setError("Server error. Please check backend connection.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="container mt-4 mb-4">
+      {/* Tabs */}
       <ul className="nav nav-tabs">
         <li className="nav-item">
           <button
@@ -77,25 +165,53 @@ function ComplaintForm() {
         </li>
       </ul>
 
+      {/* Section Header */}
       <div
-        className="alert text-dark"
+        className="alert text-dark mt-4"
         style={{
           backgroundColor: "#d9e7ff",
           borderRadius: "6px",
           padding: "10px 15px",
-          marginTop: "30px",
-          marginBottom: "20px",
           border: "1px solid #b0cfff",
         }}
-        role="alert"
       >
         Complaint / Incident Details
       </div>
 
-      <div className="card mt-5 mb-5">
+      {/* Success or Error Messages */}
+      {submitted && (
+        <div className="alert alert-success text-center fw-bold mt-3">
+          ✅ Complaint submitted successfully!
+        </div>
+      )}
+      {error && (
+        <div className="alert alert-danger text-center fw-bold mt-3">{error}</div>
+      )}
+
+      {/* Form Content */}
+      <div className="card mt-4 mb-5">
         <div className="card-body">
+          {/* Incident Tab */}
           {activeTab === "incident" && (
             <>
+              {/* Victim Email */}
+              <div className="mb-3 row">
+                <label className="col-sm-4 col-form-label">
+                  Victim Email <span className="text-danger">*</span>
+                </label>
+                <div className="col-sm-8">
+                  <input
+                    type="email"
+                    className="form-control"
+                    name="victim_email"
+                    value={incidentDetails.victim_email}
+                    onChange={handleChange}
+                    placeholder="Enter your registered email"
+                  />
+                </div>
+              </div>
+
+              {/* Category */}
               <div className="mb-3 row">
                 <label className="col-sm-4 col-form-label">
                   Category of complaint <span className="text-danger">*</span>
@@ -115,6 +231,7 @@ function ComplaintForm() {
                 </div>
               </div>
 
+              {/* Subcategory */}
               <div className="mb-3 row">
                 <label className="col-sm-4 col-form-label">
                   Sub-Category of complaint <span className="text-danger">*</span>
@@ -136,10 +253,10 @@ function ComplaintForm() {
 
               <hr />
 
+              {/* Date & Time */}
               <div className="mb-3 row align-items-center">
                 <label className="col-sm-4 col-form-label">
-                  Approximate date & time of Incident{" "}
-                  <span className="text-danger">*</span>
+                  Approximate date & time of Incident <span className="text-danger">*</span>
                 </label>
                 <div className="col-sm-8 d-flex gap-2">
                   <input
@@ -183,6 +300,7 @@ function ComplaintForm() {
                 </div>
               </div>
 
+              {/* Delay */}
               <div className="mb-3 row">
                 <label className="col-sm-4 col-form-label">
                   Is there any delay in reporting? <span className="text-danger">*</span>
@@ -213,6 +331,7 @@ function ComplaintForm() {
                 </div>
               </div>
 
+              {/* Location */}
               <div className="mb-3 row">
                 <label className="col-sm-4 col-form-label">
                   Where did the incident occur? <span className="text-danger">*</span>
@@ -233,6 +352,7 @@ function ComplaintForm() {
                 </div>
               </div>
 
+              {/* Description */}
               <div className="mb-3 row align-items-start">
                 <label className="col-sm-4 col-form-label">
                   Additional information: <span className="text-danger">*</span>
@@ -262,20 +382,20 @@ function ComplaintForm() {
             </>
           )}
 
-          {activeTab === "suspect" && (
-            <p className="text-secondary">Suspect details section...</p>
-          )}
-
+          {/* Other Tabs */}
+          {activeTab === "suspect" && <p className="text-secondary">Suspect details section...</p>}
           {activeTab === "complainant" && (
             <p className="text-secondary">Complainant details section...</p>
           )}
 
+          {/* Preview */}
           {activeTab === "preview" && (
             <div className="card shadow-sm">
               <div className="card-header bg-danger text-white fw-bold">
                 Complaint Preview
               </div>
               <div className="card-body">
+                <p><strong>Email:</strong> {incidentDetails.victim_email}</p>
                 <p><strong>Category:</strong> {incidentDetails.category}</p>
                 <p><strong>Sub-Category:</strong> {incidentDetails.subCategory}</p>
                 <p>
@@ -290,8 +410,12 @@ function ComplaintForm() {
                 <p className="border rounded p-2 bg-light">{incidentDetails.description}</p>
 
                 <div className="text-center mt-4">
-                  <button className="btn btn-success px-4">
-                    Submit Complaint
+                  <button
+                    className="btn btn-success px-4"
+                    onClick={handleSubmit}
+                    disabled={loading}
+                  >
+                    {loading ? "Submitting..." : "Submit Complaint"}
                   </button>
                 </div>
               </div>
@@ -303,7 +427,4 @@ function ComplaintForm() {
   );
 }
 
-<div> button</div>
-
 export default ComplaintForm;
-

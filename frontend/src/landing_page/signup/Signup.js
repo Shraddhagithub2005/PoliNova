@@ -33,6 +33,35 @@ function Signup() {
         if (name === "password") {
             validatePassword(value);
         }
+
+        // 🔹 Auto-fetch City, State, Country when Pincode is entered
+        if (name === "pincode" && value.length === 6) {
+            fetch(`https://api.postalpincode.in/pincode/${value}`)
+                .then((res) => res.json())
+                .then((data) => {
+                    if (data[0].Status === "Success" && data[0].PostOffice && data[0].PostOffice.length > 0) {
+                        const place = data[0].PostOffice[0];
+                        setFormData((prev) => ({
+                            ...prev,
+                            city: place.District || "",
+                            state: place.State || "",
+                            country: place.Country || "India",
+                        }));
+                    } else {
+                        alert("Invalid Pincode or no data found.");
+                        setFormData((prev) => ({
+                            ...prev,
+                            city: "",
+                            state: "",
+                            country: "",
+                        }));
+                    }
+                })
+                .catch((err) => {
+                    console.error("Error fetching pincode data:", err);
+                    alert("Failed to fetch details for this pincode.");
+                });
+        }
     };
 
     // --- EMAIL VERIFICATION ---
@@ -145,6 +174,14 @@ function Signup() {
     const handleSignup = async (e) => {
         e.preventDefault();
 
+        // ✅ Check for empty fields before proceeding
+        for (const [key, value] of Object.entries(formData)) {
+            if (!value && key !== "otp") {
+                alert(`Please fill the ${key} field before signing up!`);
+                return;
+            }
+        }
+
         if (!emailVerified) return alert("Please verify your email before signing up!");
         if (!phoneOtpVerified) return alert("Please verify your phone number using the Authenticator app first!");
         if (!validatePassword(formData.password)) return;
@@ -197,8 +234,8 @@ function Signup() {
                     {/* City & State */}
                     <div className="row mb-4">
                         <div className="col">
-                            <label>City</label>
-                            <input type="text" className="form-control" name="city" value={formData.city} onChange={handleChange} required style={{ height: "50px" }} />
+                            <label>Country</label>
+                            <input type="text" className="form-control" name="country" value={formData.country} onChange={handleChange} required style={{ height: "50px" }} />
                         </div>
                         <div className="col">
                             <label>State</label>
@@ -209,12 +246,12 @@ function Signup() {
                     {/* Pincode & Country */}
                     <div className="row mb-4">
                         <div className="col">
-                            <label>Pin Code</label>
-                            <input type="text" className="form-control" name="pincode" value={formData.pincode} onChange={handleChange} required style={{ height: "50px" }} />
+                            <label>City</label>
+                            <input type="text" className="form-control" name="city" value={formData.city} onChange={handleChange} required style={{ height: "50px" }} />
                         </div>
                         <div className="col">
-                            <label>Country</label>
-                            <input type="text" className="form-control" name="country" value={formData.country} onChange={handleChange} required style={{ height: "50px" }} />
+                            <label>Pin Code</label>
+                            <input type="text" className="form-control" name="pincode" value={formData.pincode} onChange={handleChange} required style={{ height: "50px" }} />
                         </div>
                     </div>
 
@@ -228,7 +265,7 @@ function Signup() {
                     <div className="mb-4 d-flex align-items-center">
                         <input type="email" className="form-control me-2" name="email" placeholder="Email" value={formData.email} onChange={handleChange} required style={{ height: "50px" }} disabled={emailVerified || emailOtpSent} />
                         <button type="button" className={`btn ${emailVerified ? "btn-success" : "btn-outline-danger"}`} onClick={handleVerifyEmail} disabled={!formData.email || emailVerified || emailOtpSent}>
-                            {emailVerified ? "Verified ✅" : "Send OTP"}
+                            {emailVerified ? "Verified " : "Send OTP"}
                         </button>
                     </div>
 
@@ -309,18 +346,6 @@ function Signup() {
                         </p>
                     </div>
                 </form>
-
-                {/* --- Direct Login Button --- */}
-                <div className="text-center mt-4">
-                    <p>Already registered?</p>
-                    <button
-                        className="btn btn-outline-primary"
-                        style={{ height: "45px", fontSize: "16px", width: "200px" }}
-                        onClick={() => navigate("/LoginVictim")}
-                    >
-                        Go to Login
-                    </button>
-                </div>
             </div>
         </div>
     );

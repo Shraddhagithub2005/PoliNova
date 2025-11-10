@@ -6,22 +6,29 @@ function ReportComplaint() {
   return (
   <>
   <div className="portal-section">
-      <h2>Filing a Complaint on National Cyber Crime Reporting Portal</h2>
-      <hr />
-      <p>
-        This portal is an initiative of Government of India to facilitate
-        victims/complainants to report cyber crime complaints online. This
-        portal caters to complaints pertaining to cyber crimes only with special
-        focus on cyber crimes against women and children. Complaints reported on
-        this portal are dealt by law enforcement agencies/police based on the
-        information available in the complaints. It is imperative to provide
-        correct and accurate details while filing complaint for prompt action.
+      <h2>Filing a Complaint on PoliNova</h2>
+      <div className="mt-4 pt-3" style={{marginRight:"15px" , marginLeft:"15px"}} >
+      <p >
+        PoliNova is an online platform developed to help citizens easily report crimes and track complaint progress through a single, user-friendly portal. This initiative aims to bridge the gap between citizens and law enforcement agencies, ensuring transparency and quick action in handling reported cases.
       </p>
       <p>
-        Please contact local police in case of an emergency or for reporting
-        crimes other than cyber crimes. National police helpline number is 112.
-        National women helpline number is 181 and Cyber Crime Helpline is 1930.
+       This portal caters to complaints related to general crimes, cyber offences, and public safety issues, with a focus on enhancing communication between users and local police authorities. Complaints submitted  to the PoliNova departments based on the information provided by the complainant.
       </p>
+
+      <p>
+        It is important to enter accurate and complete details while submitting a report to ensure timely response and proper investigation.
+      </p>
+      <p>
+        For emergencies or situations requiring immediate police assistance, please contact your nearest police station or use the following helpline numbers:
+      </p>
+      </div>
+      <br/>
+
+      <ul>
+        <li>National Police Helpline: 112</li>
+        <li>Women Safety Helpline: 181</li>
+        <li>Cyber Crime Helpline: 1930</li>
+      </ul>
 
       <div className="buttons">
         <Link to="/VictimDashboard/Rules_Regulations" className="btn btn-danger">
@@ -35,3 +42,4 @@ function ReportComplaint() {
 }
 
 export default ReportComplaint;
+

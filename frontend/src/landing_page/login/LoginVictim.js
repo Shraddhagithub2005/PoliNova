@@ -32,7 +32,7 @@ function LoginVictim() {
       const data = await response.json();
 
       if (response.ok) {
-        alert("✅ Login successful!");
+        alert(" Login successful!");
         console.log("User:", data);
 
         // Optionally save session info

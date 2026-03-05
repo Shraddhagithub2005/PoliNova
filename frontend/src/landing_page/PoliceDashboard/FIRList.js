@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom"; // ✅ added for navigation
+import { useNavigate } from "react-router-dom"; 
 import "bootstrap/dist/css/bootstrap.min.css";
 
 function FIRList() {
   const [firData, setFirData] = useState([]);
   const [error, setError] = useState("");
-  const navigate = useNavigate(); // ✅ useNavigate hook
+  const navigate = useNavigate(); 
 
-  // ✅ Fetch real complaints from backend
+  //  Fetch real complaints from backend
   useEffect(() => {
     fetch("http://127.0.0.1:8000/api/victim/complaint/list/")
       .then((res) => {
@@ -18,12 +18,12 @@ function FIRList() {
         setFirData(data);
       })
       .catch((err) => {
-        console.error("❌ Error fetching complaints:", err);
+        console.error(" Error fetching complaints:", err);
         setError("Failed to load complaints from server.");
       });
   }, []);
 
-  // ✅ Updated to navigate to a full page instead of showing alert
+  // Updated to navigate to a full page instead of showing alert
   const handleViewComplaint = (complaint) => {
     navigate(`/police/complaint/${complaint.complaint_id}`);
   };

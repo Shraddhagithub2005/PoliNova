@@ -12,7 +12,7 @@ function VictimNavbar() {
 
   return (
     <div>
-      <nav className="navbar-light shadow-sm mt-3">
+      <nav className="navbar-light shadow-sm mt-5">
         <button
           className="btn d-flex align-items-center"
           onClick={toggleSidebar}

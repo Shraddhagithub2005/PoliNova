@@ -66,27 +66,39 @@ function Signup() {
 
     // --- EMAIL VERIFICATION ---
     const handleVerifyEmail = async () => {
-        try {
-            const response = await fetch("http://127.0.0.1:8000/api/send-verification-email/", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email: formData.email }),
-            });
+    try {
+        const response = await fetch("http://127.0.0.1:8000/api/send-verification-email/", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            mode: "cors",   // ✅ IMPORTANT
+            body: JSON.stringify({
+                email: formData.email,
+            }),
+        });
 
-            const data = await response.json();
-
-            if (response.ok) {
-                alert("Verification code sent to your email!");
-                setEmailOtpSent(true);
-                setFormData(prev => ({ ...prev, otp: "" }));
-            } else {
-                alert("Error: " + (data.error || "Failed to send verification email."));
-            }
-        } catch (error) {
-            console.error("Error sending email verification:", error);
-            alert("Error sending verification email: " + error.message);
+        // ✅ Check if response exists
+        if (!response) {
+            throw new Error("No response from server");
         }
-    };
+
+        const data = await response.json();
+
+        console.log("Response:", data);
+
+        if (response.ok) {
+            alert("Verification code sent!");
+            setEmailOtpSent(true);
+        } else {
+            alert("Error: " + (data.error || "Failed to send email"));
+        }
+
+    } catch (error) {
+        console.error("FETCH ERROR:", error);
+        alert("Failed to connect to server. Check backend or CORS.");
+    }
+};
 
     const handleVerifyOTP = async () => {
         try {

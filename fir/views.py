@@ -5,6 +5,7 @@ import qrcode
 import io
 import re
 import string
+from datetime import datetime
 from django.core.mail import send_mail
 from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -21,36 +22,48 @@ from .serializers import VictimSerializer
 # ------------------- EMAIL VERIFICATION -------------------
 @csrf_exempt
 def send_verification_email(request):
-    if request.method == "POST":
+
+    # ✅ Handle CORS preflight
+    if request.method == "OPTIONS":
+        return JsonResponse({"message": "OK"}, status=200)
+
+    if request.method != "POST":
+        return JsonResponse({"error": "Invalid request method"}, status=405)
+
+    try:
+        # ✅ SAFE JSON parsing
         try:
-            data = json.loads(request.body)
-            email = data.get("email")
+            data = json.loads(request.body.decode("utf-8"))
+        except:
+            return JsonResponse({"error": "Invalid JSON"}, status=400)
 
-            if not email:
-                return JsonResponse({"error": "Email is required"}, status=400)
+        print("Incoming request:", data)
 
-            otp = str(random.randint(100000, 999999))
+        email = data.get("email")
 
-            EmailVerification.objects.update_or_create(
-                email=email,
-                defaults={"token": otp, "created_at": timezone.now()},
-            )
+        if not email:
+            return JsonResponse({"error": "Email is required"}, status=400)
 
-            send_mail(
-                subject="SmartFIR Email Verification Code",
-                message=f"Your SmartFIR verification code is: {otp}\nUse this code to verify your email.",
-                from_email=settings.EMAIL_HOST_USER,
-                recipient_list=[email],
-                fail_silently=False,
-            )
+        otp = str(random.randint(100000, 999999))
 
-            return JsonResponse({"message": "Verification code sent successfully!"})
+        EmailVerification.objects.update_or_create(
+            email=email,
+            defaults={"token": otp, "created_at": timezone.now()},
+        )
 
-        except Exception as e:
-            print(" Error sending email:", e)
-            return JsonResponse({"error": str(e)}, status=500)
+        send_mail(
+            subject="SmartFIR Email Verification Code",
+            message=f"Your OTP is: {otp}",
+            from_email=settings.EMAIL_HOST_USER,
+            recipient_list=[email],
+            fail_silently=False,
+        )
 
-    return JsonResponse({"error": "Invalid request"}, status=400)
+        return JsonResponse({"message": "OTP sent successfully"}, status=200)
+
+    except Exception as e:
+        print("❌ EMAIL ERROR:", str(e))
+        return JsonResponse({"error": str(e)}, status=500)
 
 
 @csrf_exempt
@@ -106,47 +119,78 @@ def verify_email(request):
 # ------------------- PHONE VERIFICATION -------------------
 def generate_qr(request):
     phone = request.GET.get("phone")
+
     if not phone:
         return JsonResponse({"error": "Phone number is required"}, status=400)
 
-    obj, created = PhoneVerification.objects.get_or_create(phone=phone)
-    if created or not obj.secret:
-        obj.secret = pyotp.random_base32()
-        obj.created_at = timezone.now()
-        obj.save()
+    # 🔥 DELETE OLD RECORD (IMPORTANT)
+    PhoneVerification.objects.filter(phone=phone).delete()
 
-    totp = pyotp.TOTP(obj.secret)
-    uri = totp.provisioning_uri(name=phone, issuer_name="SmartFIR")
+    # ✅ CREATE NEW SECRET
+    secret = pyotp.random_base32()
+
+    PhoneVerification.objects.create(
+        phone=phone,
+        secret=secret,
+        verified=False,
+        created_at=timezone.now()
+    )
+
+    totp = pyotp.TOTP(secret)
+
+    uri = totp.provisioning_uri(
+        name=phone,
+        issuer_name="SmartFIR"
+    )
+
     img = qrcode.make(uri)
     buf = io.BytesIO()
     img.save(buf, format="PNG")
     buf.seek(0)
+
     return HttpResponse(buf.getvalue(), content_type="image/png")
 
 
 @csrf_exempt
 def verify_otp(request):
+
+    if request.method == "OPTIONS":
+        return JsonResponse({"message": "OK"}, status=200)
+
     if request.method != "POST":
         return JsonResponse({"error": "Invalid request method"}, status=405)
 
-    data = json.loads(request.body)
-    phone = data.get("phone")
-    otp = data.get("otp")
-    if not phone or not otp:
-        return JsonResponse({"error": "Phone and OTP are required"}, status=400)
-
     try:
-        obj = PhoneVerification.objects.get(phone=phone)
-    except PhoneVerification.DoesNotExist:
-        return JsonResponse({"error": "Phone not registered"}, status=404)
+        data = json.loads(request.body.decode("utf-8"))
+        print("Incoming OTP:", data)
 
-    totp = pyotp.TOTP(obj.secret)
-    if totp.verify(otp):
-        obj.verified = True
-        obj.save()
-        return JsonResponse({"message": " Phone verified successfully!"})
-    else:
-        return JsonResponse({"error": " Invalid or expired OTP"}, status=400)
+        phone = data.get("phone")
+        otp = str(data.get("otp")).strip()
+
+        if not phone or not otp:
+            return JsonResponse({"error": "Phone and OTP required"}, status=400)
+
+        try:
+            obj = PhoneVerification.objects.get(phone=phone)
+        except PhoneVerification.DoesNotExist:
+            return JsonResponse({"error": "QR not generated"}, status=404)
+
+        totp = pyotp.TOTP(obj.secret)
+
+        # 🔥 FINAL FIX (handles delay + sync issues)
+        if totp.verify(otp, valid_window=5):
+            obj.verified = True
+            obj.save()
+
+            return JsonResponse({"message": "Phone verified successfully"}, status=200)
+        else:
+            print("❌ Expected OTP:", totp.now())  # DEBUG
+            return JsonResponse({"error": "Invalid OTP"}, status=400)
+
+    except Exception as e:
+        print("❌ ERROR:", str(e))
+        return JsonResponse({"error": str(e)}, status=500)
+
 
 
 # ------------------- SIGNUP -------------------
@@ -175,7 +219,7 @@ def signup(request):
             phone_record = PhoneVerification.objects.filter(phone=phone, verified=True).first()
             if not phone_record:
                 return JsonResponse({"error": "Please verify your phone first."}, status=400)
-
+            
             existing_phone = Victim.objects.filter(phone=phone).exclude(id=victim.id).first()
             if existing_phone:
                 return JsonResponse({"error": "This phone number is already linked to another account."}, status=400)
@@ -259,49 +303,51 @@ def get_profile(request, email):
 
 @csrf_exempt
 def save_profile(request):
+
+    if request.method == "OPTIONS":
+        return JsonResponse({"message": "OK"}, status=200)
+
     if request.method != "POST":
         return JsonResponse({"error": "Invalid request method"}, status=405)
 
     try:
-        data = json.loads(request.body)
-        email = data.get('email')
+        data = json.loads(request.body.decode("utf-8"))
+        print("Incoming profile data:", data)
+
+        email = data.get("email")
         if not email:
             return JsonResponse({"error": "Email is required"}, status=400)
 
-        if isinstance(data.get('address'), dict):
-            data['address'] = json.dumps(data['address'])
+        if isinstance(data.get("address"), dict):
+            data["address"] = json.dumps(data["address"])
 
-        try:
-            victim = Victim.objects.get(email=email)
-            for key, value in data.items():
-                setattr(victim, key, value)
-            victim.save()
-            response_data = VictimSerializer(victim).data
-            if 'address' in response_data:
-                try:
-                    response_data['address'] = json.loads(response_data['address'])
-                except:
-                    pass
-            return JsonResponse(response_data, status=200)
-        except Victim.DoesNotExist:
-            serializer = VictimSerializer(data=data)
-            if serializer.is_valid():
-                serializer.save()
-                response_data = serializer.data
-                if 'address' in response_data:
-                    try:
-                        response_data['address'] = json.loads(response_data['address'])
-                    except:
-                        pass
-                return JsonResponse(response_data, status=200)
-            else:
-                return JsonResponse(serializer.errors, status=400)
+        victim, created = Victim.objects.get_or_create(email=email)
+
+        # ✅ SAFE FIELD UPDATE
+        victim.first_name = data.get("first_name", victim.first_name)
+        victim.last_name = data.get("last_name", victim.last_name)
+        victim.phone = data.get("phone", victim.phone)
+        victim.address = data.get("address", victim.address)
+        victim.city = data.get("city", victim.city)
+        victim.state = data.get("state", victim.state)
+        victim.pincode = data.get("pincode", victim.pincode)
+        victim.country = data.get("country", victim.country)
+
+        victim.save()
+
+        response_data = VictimSerializer(victim).data
+
+        if "address" in response_data:
+            try:
+                response_data["address"] = json.loads(response_data["address"])
+            except:
+                pass
+
+        return JsonResponse(response_data, status=200)
 
     except Exception as e:
-        print(" Save profile error:", e)
+        print("❌ Save Profile Error:", str(e))
         return JsonResponse({"error": str(e)}, status=500)
-
-
 # ------------------- POLICE LOGIN -------------------
 @csrf_exempt
 def login_police(request):
@@ -331,6 +377,12 @@ def save_complaint(request):
         try:
             data = json.loads(request.body.decode("utf-8"))
 
+            time_value = data.get("time")
+
+            # ✅ FIX invalid time
+            if not time_value or "NaN" in time_value:
+                time_value = datetime.now().strftime("%H:%M:%S")
+
             complaint = Complaint(
                 complaint_id=data.get("complaint_id"),
                 victim_email=data.get("victim_email"),
@@ -339,8 +391,8 @@ def save_complaint(request):
                 description=data.get("description"),
                 location=data.get("location"),
                 date=data.get("date"),
-                time=data.get("time"),
-                delay=data.get("delay", "No"),  # optional field
+                time=time_value,   # ✅ fixed
+                delay=data.get("delay", "No"),
                 created_at=timezone.now(),
             )
 
@@ -352,6 +404,8 @@ def save_complaint(request):
             return JsonResponse({"error": str(e)}, status=500)
 
     return JsonResponse({"error": "Invalid request method"}, status=400)
+
+
 
 @csrf_exempt
 def complaint_list(request):

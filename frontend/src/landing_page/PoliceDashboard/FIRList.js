@@ -16,7 +16,7 @@ function FIRList() {
   }, []);
 
   return (
-    <div className="container mt-5 mb-5" style={{ width: "80%" }}>
+    <div className="container  mb-5" style={{ width: "80%",marginTop: "12%" }}>
       <h4 className="text-center text-danger mb-5 fw-bold">
         FIR Complaint List
       </h4>

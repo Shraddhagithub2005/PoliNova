@@ -1,6 +1,7 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
 import PoliceNavbar from "./PoliceNavbar";
+import ChatWidget from "./ChatWidget";
 
 
 function PoliceDashboard() {
@@ -10,7 +11,7 @@ function PoliceDashboard() {
      <div style={{ marginTop: "130px" }}>
   <Outlet />
 </div>
-      
+      <ChatWidget />
     </>
   );
 }

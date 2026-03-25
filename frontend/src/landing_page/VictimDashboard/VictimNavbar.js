@@ -12,16 +12,29 @@ function VictimNavbar() {
 
   return (
     <div>
-      <nav className="navbar-light shadow-sm mt-5">
-        <button
-          className="btn d-flex align-items-center"
-          onClick={toggleSidebar}
-          style={{ fontWeight: "bold" }}
-        >
-          <FaHome size={22} className="me-2" />
-          <h4 style={{ fontSize: "20px", margin: 0 }}>Victim Dashboard</h4>
-        </button>
-      </nav>
+      <nav
+  className="navbar-light shadow-sm mt-5"
+  style={{
+    position: "fixed",
+    top: "10px",
+    left: 0,
+    width: "100%",
+    height: "70px",
+    zIndex: 1000,
+    background: "white"
+  }}
+>
+  <button
+    className="btn d-flex align-items-center"
+    onClick={toggleSidebar}
+    style={{ fontWeight: "bold", marginTop: "20px" }}
+  >
+    <FaHome size={22} className="me-2" />
+    <h4 style={{ fontSize: "20px", margin: 0 }}>
+      Victim Dashboard
+    </h4>
+  </button>
+</nav>
 
       {/* Sidebar */}
       <div

@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 function Rules_Regulations() {
     return ( 
-        <div className="portal-section">
+        <div className="portal-section" style={{marginTop:"15%"}}>
       <h2>Before Filing a Complaint on PoliNova</h2>
       <div className="mt-2 pt-2 " style={{marginRight:"15px" , marginLeft:"15px"}}>
       <p>

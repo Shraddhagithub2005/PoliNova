@@ -128,9 +128,9 @@ function ComplaintForm() {
   };
 
   return (
-    <div className="container mt-4 mb-4">
+    <div className="container mt-4 mb-4" >
       {/* Tabs */}
-      <ul className="nav nav-tabs">
+      <ul className="nav nav-tabs"style={{marginTop:"13%"}}>
         <li className="nav-item">
           <button
             className={`nav-link ${activeTab === "incident" ? "active btn-danger text-black" : ""}`}

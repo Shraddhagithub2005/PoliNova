@@ -38,7 +38,7 @@ function LoginPolice() {
   return (
     <div
       className="container d-flex justify-content-center align-items-center"
-      style={{ minHeight: "90vh" }}
+      style={{  minHeight: "90vh", marginTop: "5%" }}
     >
       <div
         className="p-5 shadow-lg"

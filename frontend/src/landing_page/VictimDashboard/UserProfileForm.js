@@ -87,10 +87,12 @@ function UserProfileForm() {
   if (loading) return <p>Loading...</p>;
 
   // ✅ Show profile card if profile is saved
-// ✅ Show profile card if profile is saved
 if (profileSaved) {
   return (
-    <div className="container mt-5">
+    <div
+      className="container"
+      style={{ marginTop: "200px" ,marginBottom:"100px"}}  // 🔥 pushes below navbar
+    >
       <h4 className="mb-4 text-center">User Profile</h4>
       <div className="card shadow-lg p-4 rounded-4 border-0" style={{ maxWidth: "700px", margin: "0 auto", backgroundColor: "#f8f9fa" }}>
         <div className="row mb-3">
@@ -142,7 +144,13 @@ if (profileSaved) {
 
   // ✅ Show form if profile not saved
   return (
-    <div className="container mt-5 mb-5 p-4 shadow-sm bg-light rounded" style={{ maxWidth: "900px" }}>
+    <div
+      className="container mb-5 p-4 shadow-sm bg-light rounded"
+      style={{
+        maxWidth: "900px",
+        marginTop: "180px"   // 🔥 push below navbar
+      }}
+    >
       <h4 className="mb-4 text-black border-bottom pb-2">User Profile Details</h4>
       <form onSubmit={handleSubmit}>
         {/* Login ID */}

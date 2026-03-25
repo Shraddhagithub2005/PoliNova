@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 function MandatoryList() {
     return ( 
         <>
-        <div className="portal-section">
+        <div className="portal-section" style={{marginTop:"15%"}}>
       <h2>Checklist for Complainant</h2>
       <div className="mt-4 pt-3" style={{marginRight:"15px" , marginLeft:"15px"}} >
       <p>

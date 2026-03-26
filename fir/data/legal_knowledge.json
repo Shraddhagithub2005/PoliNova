@@ -1,0 +1,680 @@
+[
+  {
+    "id": "zero_fir_and_fir_rights",
+    "title": "FIR and Zero FIR guidance",
+    "summary": "Useful when the user wants to know how to report a cognizable offence, where to file, or what the police must record.",
+    "keywords": ["fir", "zero fir", "complaint", "report crime", "police station", "not taking complaint", "register fir", "cognizable", "written complaint"],
+    "ipc_sections": [],
+    "other_laws": [
+      {
+        "law": "CrPC Section 154",
+        "title": "Information in cognizable cases",
+        "details": "Traditionally used for FIR registration guidance and often cited in legacy practice."
+      },
+      {
+        "law": "CrPC Section 164",
+        "title": "Statements and confessions before Magistrate",
+        "details": "Relevant when a victim or witness statement needs stronger evidentiary recording."
+      }
+    ],
+    "victim_guidance": [
+      "Ask for a written acknowledgement, diary number, or FIR number after the complaint is recorded.",
+      "If the incident happened elsewhere, request a Zero FIR so the matter can be transferred later.",
+      "Carry identity proof, incident timeline, screenshots, photographs, and witness details if available."
+    ],
+    "police_guidance": [
+      "Record the basic facts, date, place, accused details if known, and preserve supporting material supplied by the complainant.",
+      "When territorial jurisdiction is uncertain but the allegations disclose a cognizable offence, consider Zero FIR workflow as per prevailing procedure.",
+      "Separate the immediate safety response from later detailed investigation to avoid delay in registration."
+    ],
+    "evidence": ["Written complaint", "Identity details", "Screenshots or photos", "Witness names", "Medical papers if any"],
+    "notes": "Indian criminal procedure changed in 2024, so current station practice should be cross-checked with BNSS and local police circulars."
+  },
+  {
+    "id": "theft",
+    "title": "Theft",
+    "summary": "Movable property taken dishonestly without consent.",
+    "keywords": ["theft", "stolen", "phone stolen", "bike stolen", "wallet stolen", "snatched property", "cash stolen", "laptop stolen"],
+    "ipc_sections": [
+      {
+        "section": "378",
+        "title": "Theft",
+        "details": "Defines dishonest moving of movable property out of possession without consent."
+      },
+      {
+        "section": "379",
+        "title": "Punishment for theft",
+        "details": "General punishment provision for theft allegations."
+      }
+    ],
+    "other_laws": [],
+    "victim_guidance": [
+      "Preserve purchase bills, IMEI numbers, serial numbers, and last known location data for stolen devices.",
+      "Record the exact place, time, and circumstances of loss, including CCTV locations nearby."
+    ],
+    "police_guidance": [
+      "Capture property identifiers early and alert local surveillance or pawn-shop channels where available.",
+      "Check CCTV coverage, call detail records, and device-tracking leads promptly in fresh cases."
+    ],
+    "evidence": ["Property ownership proof", "IMEI or serial number", "CCTV locations", "Witness statements"],
+    "notes": "Snatching with force may require robbery-related sections instead of plain theft."
+  },
+  {
+    "id": "robbery_dacoity",
+    "title": "Robbery or dacoity",
+    "summary": "Property taken by force, fear, or violence; aggravated when several offenders act together.",
+    "keywords": ["robbery", "snatching", "loot", "looted", "armed robbery", "dacoity", "gang looted", "threat and took money"],
+    "ipc_sections": [
+      {
+        "section": "390",
+        "title": "Robbery",
+        "details": "Explains when theft or extortion escalates into robbery due to violence or fear."
+      },
+      {
+        "section": "392",
+        "title": "Punishment for robbery",
+        "details": "General punishment section for robbery."
+      },
+      {
+        "section": "391",
+        "title": "Dacoity",
+        "details": "Applies when five or more persons conjointly commit or attempt robbery."
+      },
+      {
+        "section": "395",
+        "title": "Punishment for dacoity",
+        "details": "Punishment provision for dacoity."
+      }
+    ],
+    "other_laws": [],
+    "victim_guidance": [
+      "Seek immediate medical help if injured and keep the MLC or hospital papers.",
+      "Write down weapon details, vehicle numbers, direction of escape, and distinct physical features."
+    ],
+    "police_guidance": [
+      "Treat scene preservation, weapon description, CCTV capture, and medico-legal examination as priority steps.",
+      "Consider test identification and route mapping where multiple offenders or vehicles are involved."
+    ],
+    "evidence": ["MLC or injury records", "CCTV footage", "Weapon description", "Vehicle details", "Witness accounts"],
+    "notes": "Where force or threat is clearly alleged, robbery sections are usually more appropriate than only theft."
+  },
+  {
+    "id": "cheating_and_breach_of_trust",
+    "title": "Cheating, fraud, or criminal breach of trust",
+    "summary": "Deception to obtain money or property, or dishonest misuse of entrusted property.",
+    "keywords": ["cheating", "fraud", "scam", "investment scam", "loan scam", "took money and vanished", "breach of trust", "embezzlement", "dishonest", "fake promise"],
+    "ipc_sections": [
+      {
+        "section": "415",
+        "title": "Cheating",
+        "details": "Covers dishonest or fraudulent inducement causing delivery of property or harmful action."
+      },
+      {
+        "section": "420",
+        "title": "Cheating and dishonestly inducing delivery of property",
+        "details": "Commonly cited when money or property is obtained through deception."
+      },
+      {
+        "section": "405",
+        "title": "Criminal breach of trust",
+        "details": "Applies where entrusted property is dishonestly misused or converted."
+      },
+      {
+        "section": "406",
+        "title": "Punishment for criminal breach of trust",
+        "details": "Punishment provision for breach of trust allegations."
+      }
+    ],
+    "other_laws": [],
+    "victim_guidance": [
+      "Preserve bank statements, transfer references, invoices, chats, emails, and the exact false representations made.",
+      "Note whether the dishonest intention existed from the beginning, because that often affects section choice."
+    ],
+    "police_guidance": [
+      "Separate civil-contract disputes from allegations showing initial dishonest inducement or misappropriation.",
+      "Secure documentary trail early, including account details, communication history, and beneficiary identification."
+    ],
+    "evidence": ["Bank trail", "Chats and emails", "Receipts or agreements", "Screenshots of promises", "Beneficiary details"],
+    "notes": "Purely contractual payment disputes may need closer screening before criminal sections are applied."
+  },
+  {
+    "id": "cyber_fraud",
+    "title": "Cyber fraud, identity theft, or obscene online content",
+    "summary": "Online impersonation, OTP scams, payment fraud, or unlawful digital publication.",
+    "keywords": ["cyber", "online fraud", "otp scam", "upi fraud", "phishing", "identity theft", "fake profile", "hacked account", "obscene post", "nude image", "morphed photo"],
+    "ipc_sections": [
+      {
+        "section": "419",
+        "title": "Punishment for cheating by personation",
+        "details": "Relevant when impersonation is used to deceive."
+      },
+      {
+        "section": "420",
+        "title": "Cheating and dishonestly inducing delivery of property",
+        "details": "Often paired with digital financial deception cases."
+      },
+      {
+        "section": "509",
+        "title": "Word, gesture or act intended to insult modesty",
+        "details": "Sometimes considered when abusive or insulting digital conduct targets a woman."
+      }
+    ],
+    "other_laws": [
+      {
+        "law": "Information Technology Act Section 66C",
+        "title": "Identity theft",
+        "details": "Relevant for misuse of passwords, digital signatures, or unique identification features."
+      },
+      {
+        "law": "Information Technology Act Section 66D",
+        "title": "Cheating by personation using computer resource",
+        "details": "Common in OTP, fake KYC, and online impersonation scams."
+      },
+      {
+        "law": "Information Technology Act Section 67",
+        "title": "Obscene electronic material",
+        "details": "Relevant for obscene publication or transmission online."
+      },
+      {
+        "law": "Information Technology Act Section 67A",
+        "title": "Sexually explicit electronic material",
+        "details": "Relevant for sexually explicit digital content."
+      }
+    ],
+    "victim_guidance": [
+      "Immediately save screenshots, URLs, handles, transaction IDs, UPI IDs, and device logs.",
+      "For account compromise, change passwords, enable multi-factor authentication, and alert the bank or platform quickly."
+    ],
+    "police_guidance": [
+      "Preserve digital evidence with timestamps, platform URLs, transaction references, and account freeze requests where appropriate.",
+      "Escalate time-sensitive financial fraud through cyber response channels quickly because recovery chances fall with delay."
+    ],
+    "evidence": ["Screenshots", "Transaction IDs", "UPI IDs or wallet IDs", "Links and usernames", "Email headers or device logs"],
+    "notes": "Platform preservation requests and bank freeze steps are often time-sensitive in cyber fraud cases."
+  },
+  {
+    "id": "assault_hurt",
+    "title": "Simple hurt or assault",
+    "summary": "Physical violence causing pain or minor injuries.",
+    "keywords": ["assault", "beaten", "hit", "slapped", "punched", "minor injury", "hurt", "physical fight"],
+    "ipc_sections": [
+      {
+        "section": "351",
+        "title": "Assault",
+        "details": "Defines gestures or preparations creating apprehension of criminal force."
+      },
+      {
+        "section": "323",
+        "title": "Punishment for voluntarily causing hurt",
+        "details": "Commonly used for non-grievous physical injuries."
+      }
+    ],
+    "other_laws": [],
+    "victim_guidance": [
+      "Take photographs of injuries as early as possible and obtain medical records even for apparently minor hurt.",
+      "Note witnesses and any prior threats or motive that explain the attack."
+    ],
+    "police_guidance": [
+      "Collect injury documentation promptly and assess whether weapon use or fracture elevates the offence.",
+      "Preserve scene details and CCTV before it is overwritten."
+    ],
+    "evidence": ["MLC or doctor papers", "Injury photos", "Witness names", "CCTV footage"],
+    "notes": "Weapon use, fracture, or permanent injury may shift the case toward grievous hurt sections."
+  },
+  {
+    "id": "grievous_hurt",
+    "title": "Grievous hurt or dangerous weapon injury",
+    "summary": "Serious bodily injury, fracture, disfigurement, or hurt caused with dangerous means.",
+    "keywords": ["grievous hurt", "fracture", "broken bone", "stabbed", "knife attack", "acid", "serious injury", "dangerous weapon"],
+    "ipc_sections": [
+      {
+        "section": "320",
+        "title": "Grievous hurt",
+        "details": "Lists kinds of injuries legally treated as grievous."
+      },
+      {
+        "section": "325",
+        "title": "Punishment for voluntarily causing grievous hurt",
+        "details": "Used for serious injuries where a dangerous weapon provision is not more apt."
+      },
+      {
+        "section": "326",
+        "title": "Grievous hurt by dangerous weapons or means",
+        "details": "Relevant for knives, corrosives, fire, or other dangerous means."
+      }
+    ],
+    "other_laws": [],
+    "victim_guidance": [
+      "Prioritize emergency treatment and preserve all surgery papers, scans, discharge summaries, and photographs.",
+      "If a weapon was used, describe it precisely and avoid washing blood-stained clothing if safe to preserve."
+    ],
+    "police_guidance": [
+      "Secure the medical opinion on nature of injury and seize clothing or weapon under proper chain of custody.",
+      "Assess scene reconstruction and forensic examination where weapon use is alleged."
+    ],
+    "evidence": ["Hospital records", "Imaging reports", "Weapon details", "Blood-stained clothes", "Scene photos"],
+    "notes": "Medical opinion usually drives whether hurt is treated as simple or grievous."
+  },
+  {
+    "id": "sexual_harassment_and_modesty",
+    "title": "Sexual harassment, outrage of modesty, or insulting modesty",
+    "summary": "Unwanted sexual conduct, touching, verbal harassment, or conduct targeting a woman's dignity.",
+    "keywords": ["sexual harassment", "molestation", "touched inappropriately", "groped", "outrage modesty", "eve teasing", "obscene comments", "insult modesty"],
+    "ipc_sections": [
+      {
+        "section": "354",
+        "title": "Assault or criminal force to woman with intent to outrage modesty",
+        "details": "Relevant for non-consensual force or contact targeting a woman."
+      },
+      {
+        "section": "354A",
+        "title": "Sexual harassment",
+        "details": "Covers unwelcome physical contact, sexual advances, demands, or explicit sexual remarks."
+      },
+      {
+        "section": "509",
+        "title": "Word, gesture or act intended to insult modesty",
+        "details": "Relevant for verbal, gestural, or expressive acts insulting modesty."
+      }
+    ],
+    "other_laws": [],
+    "victim_guidance": [
+      "Write down the exact words, location, time, and identities of people present as early as possible.",
+      "Preserve messages, CCTV, clothing, and any nearby eyewitness details."
+    ],
+    "police_guidance": [
+      "Take a sensitive statement, preserve digital or CCTV evidence, and assess whether the facts disclose higher sexual offence sections.",
+      "Consider victim safety, repeat-contact risk, and witness protection needs."
+    ],
+    "evidence": ["Chats or messages", "CCTV footage", "Witness statements", "Location details"],
+    "notes": "Serious penetrative sexual assault allegations require different and more stringent sections and procedure."
+  },
+  {
+    "id": "rape_and_sexual_assault",
+    "title": "Rape or serious sexual assault",
+    "summary": "Penetrative sexual assault or aggravated sexual offences.",
+    "keywords": ["rape", "sexual assault", "forced sex", "gang rape", "penetrative assault", "drugged and assaulted"],
+    "ipc_sections": [
+      {
+        "section": "376",
+        "title": "Punishment for rape",
+        "details": "General punishment provision for rape offences."
+      },
+      {
+        "section": "376D",
+        "title": "Gang rape",
+        "details": "Relevant where multiple persons are involved in the sexual assault."
+      }
+    ],
+    "other_laws": [],
+    "victim_guidance": [
+      "Seek urgent medical help, and if possible avoid bathing or washing clothes before medical examination.",
+      "Request support from a trusted person, legal aid, or counsellor during statement and medical processes."
+    ],
+    "police_guidance": [
+      "Prioritize victim safety, medico-legal examination, trauma-informed recording, and strict evidence-preservation steps.",
+      "Ensure statements and seizure steps are handled with privacy and statutory sensitivity."
+    ],
+    "evidence": ["MLC and forensic samples", "Clothing", "Chats or calls", "CCTV or transport trail", "Witnesses"],
+    "notes": "This is a high-priority category where special procedural safeguards apply and immediate response matters."
+  },
+  {
+    "id": "stalking_voyeurism",
+    "title": "Stalking, voyeurism, or repeated monitoring",
+    "summary": "Repeated following, contacting, tracking, or capturing private images without consent.",
+    "keywords": ["stalking", "followed me", "repeated calls", "tracking", "voyeurism", "secret video", "spy camera", "private photo", "keeps following"],
+    "ipc_sections": [
+      {
+        "section": "354C",
+        "title": "Voyeurism",
+        "details": "Relevant for watching or capturing images of a woman engaged in a private act without consent."
+      },
+      {
+        "section": "354D",
+        "title": "Stalking",
+        "details": "Covers repeated following, contacting, or monitoring despite disinterest."
+      }
+    ],
+    "other_laws": [],
+    "victim_guidance": [
+      "Save call logs, screenshots, location history, social-media URLs, and dates of repeated incidents.",
+      "Report urgent risk if the accused is waiting near home, workplace, or school."
+    ],
+    "police_guidance": [
+      "Document repeat pattern, digital trail, and proximity behavior because repetition often matters to the offence structure.",
+      "Consider urgent protective measures where escalation risk is visible."
+    ],
+    "evidence": ["Call records", "Screenshots", "CCTV", "Social-media links", "Dates of repeated incidents"],
+    "notes": "Repeated unwanted contact is often legally important, so chronology should be recorded carefully."
+  },
+  {
+    "id": "kidnapping_abduction",
+    "title": "Kidnapping or abduction",
+    "summary": "Taking or removing a person unlawfully, including minors and forced movement.",
+    "keywords": ["kidnapping", "abduction", "missing child", "taken away", "forcibly took", "eloped minor", "wrongful confinement after taking"],
+    "ipc_sections": [
+      {
+        "section": "361",
+        "title": "Kidnapping from lawful guardianship",
+        "details": "Relevant when a minor or person of unsound mind is taken from lawful guardianship."
+      },
+      {
+        "section": "363",
+        "title": "Punishment for kidnapping",
+        "details": "General punishment section for kidnapping."
+      },
+      {
+        "section": "362",
+        "title": "Abduction",
+        "details": "Defines abduction by force or deceitful means."
+      },
+      {
+        "section": "366",
+        "title": "Kidnapping, abducting or inducing woman to compel marriage, etc.",
+        "details": "Relevant where forced marriage or illicit purpose is alleged."
+      }
+    ],
+    "other_laws": [],
+    "victim_guidance": [
+      "Share photographs, last-seen location, clothing description, phone numbers, and travel routes immediately.",
+      "For minors, keep birth proof or school records ready to establish age."
+    ],
+    "police_guidance": [
+      "Treat fresh missing-minor reports urgently with immediate circulation, CCTV tracing, and digital tracking steps.",
+      "Age determination and lawful guardianship facts are often central in minor cases."
+    ],
+    "evidence": ["Recent photographs", "Last location", "Phone numbers", "Travel details", "Age proof for minors"],
+    "notes": "Minor cases often require especially urgent handling even when motives are initially unclear."
+  },
+  {
+    "id": "criminal_intimidation",
+    "title": "Criminal intimidation or threats",
+    "summary": "Threats to cause injury, death, or reputational harm to force or alarm someone.",
+    "keywords": ["threat", "threatened", "criminal intimidation", "kill threat", "death threat", "blackmail threat", "threat call"],
+    "ipc_sections": [
+      {
+        "section": "503",
+        "title": "Criminal intimidation",
+        "details": "Defines threats intended to cause alarm or compel action or inaction."
+      },
+      {
+        "section": "506",
+        "title": "Punishment for criminal intimidation",
+        "details": "General punishment section for intimidation."
+      }
+    ],
+    "other_laws": [],
+    "victim_guidance": [
+      "Do not delete threatening calls, recordings, messages, or voicemails.",
+      "Write down whether the threat linked to money, witness pressure, relationship disputes, or prior violence."
+    ],
+    "police_guidance": [
+      "Capture the exact words, medium, timing, and surrounding motive because context affects seriousness.",
+      "Assess immediate protection needs where repeated or deadly threats are alleged."
+    ],
+    "evidence": ["Call recordings", "Messages", "Voicemails", "Witnesses", "Prior complaint history"],
+    "notes": "Threats tied to extortion, stalking, or assault may justify additional sections beyond intimidation."
+  },
+  {
+    "id": "domestic_violence_and_cruelty",
+    "title": "Domestic violence, cruelty, or dowry-linked harassment",
+    "summary": "Cruelty by spouse or relatives, harassment for dowry, or violence within domestic relationships.",
+    "keywords": ["domestic violence", "husband beating", "in laws harassment", "dowry", "498a", "marital cruelty", "wife beaten", "domestic abuse"],
+    "ipc_sections": [
+      {
+        "section": "498A",
+        "title": "Cruelty by husband or relatives of husband",
+        "details": "Commonly invoked for cruelty, harassment, or abuse linked to marriage."
+      },
+      {
+        "section": "304B",
+        "title": "Dowry death",
+        "details": "Relevant in serious cases involving death connected with dowry cruelty."
+      },
+      {
+        "section": "406",
+        "title": "Punishment for criminal breach of trust",
+        "details": "May be relevant in streedhan or entrusted property disputes where dishonest misappropriation is alleged."
+      }
+    ],
+    "other_laws": [
+      {
+        "law": "Protection of Women from Domestic Violence Act, 2005",
+        "title": "Civil protection and residence remedies",
+        "details": "Useful for protection orders, residence relief, monetary relief, and related support measures."
+      }
+    ],
+    "victim_guidance": [
+      "Preserve medical papers, prior messages, audio, photographs of injuries, and any demand for dowry or money.",
+      "If unsafe, prioritize shelter, emergency contact support, and immediate protection rather than only documenting later."
+    ],
+    "police_guidance": [
+      "Screen separately for physical assault, dowry-linked cruelty, intimidation, and streedhan misappropriation.",
+      "Document prior incidents and identify whether urgent protection or medical intervention is needed."
+    ],
+    "evidence": ["Medical records", "Chats and audio", "Dowry demand proof", "Witness statements", "Property entrustment proof"],
+    "notes": "Domestic violence matters may involve both criminal provisions and civil protection remedies."
+  },
+  {
+    "id": "murder_homicide",
+    "title": "Murder or culpable homicide",
+    "summary": "Fatal violence or conduct causing death.",
+    "keywords": ["murder", "killed", "homicide", "dead body", "death after assault", "fatal attack", "attempt to murder"],
+    "ipc_sections": [
+      {
+        "section": "299",
+        "title": "Culpable homicide",
+        "details": "Foundational definition for homicide offences."
+      },
+      {
+        "section": "300",
+        "title": "Murder",
+        "details": "Explains when culpable homicide amounts to murder."
+      },
+      {
+        "section": "302",
+        "title": "Punishment for murder",
+        "details": "General punishment provision for murder."
+      },
+      {
+        "section": "307",
+        "title": "Attempt to murder",
+        "details": "Relevant where the victim survives but the act shows murderous intent or knowledge."
+      }
+    ],
+    "other_laws": [],
+    "victim_guidance": [
+      "If the victim is alive, emergency treatment and scene preservation should take priority.",
+      "Share the last-seen timeline, hostility history, and persons present at or near the scene."
+    ],
+    "police_guidance": [
+      "Treat scene control, inquest procedure, forensic recovery, and witness isolation as immediate priorities.",
+      "Distinguish between death, attempted murder, and later medical outcome carefully while building the case theory."
+    ],
+    "evidence": ["Medical and post-mortem records", "Forensic scene evidence", "Weapon recovery", "CCTV", "Witness statements"],
+    "notes": "Homicide cases require close coordination between scene, medical, and forensic workflows."
+  },
+  {
+    "id": "rioting_and_unlawful_assembly",
+    "title": "Rioting, unlawful assembly, or group violence",
+    "summary": "Violence or force by an unlawful group.",
+    "keywords": ["riot", "rioting", "mob attack", "group violence", "unlawful assembly", "crowd attacked", "stone pelting"],
+    "ipc_sections": [
+      {
+        "section": "141",
+        "title": "Unlawful assembly",
+        "details": "Defines assembly with a common unlawful object."
+      },
+      {
+        "section": "147",
+        "title": "Rioting",
+        "details": "Punishment provision for rioting."
+      },
+      {
+        "section": "148",
+        "title": "Rioting, armed with deadly weapon",
+        "details": "Relevant when participants are armed with deadly weapons."
+      },
+      {
+        "section": "149",
+        "title": "Every member of unlawful assembly guilty of offence committed in prosecution of common object",
+        "details": "Important for group liability analysis."
+      }
+    ],
+    "other_laws": [],
+    "victim_guidance": [
+      "List the number of persons, weapons, slogans, vehicles, and video sources if any.",
+      "Share separate injury details for each victim because charge framing may differ across participants."
+    ],
+    "police_guidance": [
+      "Build the chronology around common object, participation, weapons, and specific overt acts where identifiable.",
+      "Use video, drone, CCTV, and independent witnesses to segregate presence from active participation."
+    ],
+    "evidence": ["Videos", "CCTV", "Weapon details", "Vehicle numbers", "Multiple witness accounts"],
+    "notes": "Group liability should be assessed carefully rather than assuming identical roles for all participants."
+  },
+  {
+    "id": "trespass_and_property_damage",
+    "title": "House trespass, mischief, or property damage",
+    "summary": "Illegal entry, damage to property, or vandalism.",
+    "keywords": ["trespass", "entered house", "broke gate", "property damage", "vandalism", "mischief", "destroyed property", "house trespass"],
+    "ipc_sections": [
+      {
+        "section": "441",
+        "title": "Criminal trespass",
+        "details": "Defines unlawful entry or unlawful remaining with intent to commit offence or annoy."
+      },
+      {
+        "section": "448",
+        "title": "House trespass",
+        "details": "Relevant for criminal trespass into a building used as human dwelling."
+      },
+      {
+        "section": "425",
+        "title": "Mischief",
+        "details": "Foundational definition for causing wrongful loss or damage to property."
+      },
+      {
+        "section": "427",
+        "title": "Mischief causing damage",
+        "details": "Commonly used punishment provision for property damage."
+      }
+    ],
+    "other_laws": [],
+    "victim_guidance": [
+      "Take photos before repairs and preserve bills, valuation papers, and any footage showing the entry or damage.",
+      "Note whether the accused entered to threaten, assault, steal, or only damage property."
+    ],
+    "police_guidance": [
+      "Document entry mode, damage valuation, scene photographs, and whether linked offences like theft or intimidation are also disclosed.",
+      "Secure neighbour CCTV quickly in residential areas."
+    ],
+    "evidence": ["Damage photos", "Repair estimates", "CCTV", "Witness statements", "Ownership proof"],
+    "notes": "Entry plus threat, assault, or theft often requires combined section analysis."
+  },
+  {
+    "id": "extortion_blackmail",
+    "title": "Extortion, blackmail, or coercive demand",
+    "summary": "Threats or fear used to force payment, delivery of property, or disclosure of private material.",
+    "keywords": ["extortion", "blackmail", "demanding money", "threatening to leak photos", "ransom demand", "pay money or else", "sextortion", "forced payment threat"],
+    "ipc_sections": [
+      {
+        "section": "383",
+        "title": "Extortion",
+        "details": "Defines intentionally putting a person in fear of injury to dishonestly induce delivery of property or valuable security."
+      },
+      {
+        "section": "384",
+        "title": "Punishment for extortion",
+        "details": "General punishment provision for extortion."
+      },
+      {
+        "section": "503",
+        "title": "Criminal intimidation",
+        "details": "Relevant where threats are used to create alarm or pressure."
+      },
+      {
+        "section": "506",
+        "title": "Punishment for criminal intimidation",
+        "details": "Punishment provision where threats are part of the coercion."
+      }
+    ],
+    "other_laws": [
+      {
+        "law": "Information Technology Act Section 66E",
+        "title": "Violation of privacy",
+        "details": "Can become relevant where intimate images or private content are misused online."
+      },
+      {
+        "law": "Information Technology Act Section 67A",
+        "title": "Sexually explicit electronic material",
+        "details": "Relevant where sexually explicit images or videos are circulated or threatened to be circulated."
+      }
+    ],
+    "victim_guidance": [
+      "Do not delete chats, call recordings, usernames, payment demands, QR codes, bank details, or screenshots of threats.",
+      "Avoid further payment if possible and report the threat quickly, especially when intimate images or repeated demands are involved."
+    ],
+    "police_guidance": [
+      "Capture the exact threat, demand amount, payment channel, time line, and whether intimate material or violence was used as leverage.",
+      "Preserve digital evidence quickly and identify linked bank, wallet, UPI, SIM, or social-media accounts before records change."
+    ],
+    "evidence": ["Threat messages", "Call recordings", "UPI IDs or bank details", "Screenshots", "Usernames or profile links"],
+    "notes": "Blackmail cases often involve both intimidation and extortion, and online cases may also require IT Act sections."
+  },
+  {
+    "id": "cyber_bullying_and_online_harassment",
+    "title": "Cyber bullying, online harassment, or fake profile abuse",
+    "summary": "Repeated abusive online behavior, fake profiles, morphed images, or social-media harassment.",
+    "keywords": ["cyber bullying", "online harassment", "fake profile", "morphed image", "abusive messages", "instagram harassment", "facebook harassment", "social media abuse", "defamation online", "trolling"],
+    "ipc_sections": [
+      {
+        "section": "499",
+        "title": "Defamation",
+        "details": "May be relevant where false statements harm reputation."
+      },
+      {
+        "section": "500",
+        "title": "Punishment for defamation",
+        "details": "Punishment provision for defamation."
+      },
+      {
+        "section": "503",
+        "title": "Criminal intimidation",
+        "details": "Relevant where threats or fear are part of online abuse."
+      },
+      {
+        "section": "509",
+        "title": "Word, gesture or act intended to insult modesty",
+        "details": "Can be relevant in online abuse directed at a woman."
+      }
+    ],
+    "other_laws": [
+      {
+        "law": "Information Technology Act Section 66C",
+        "title": "Identity theft",
+        "details": "Relevant when a fake profile uses another person's identity credentials or information."
+      },
+      {
+        "law": "Information Technology Act Section 66D",
+        "title": "Cheating by personation using computer resource",
+        "details": "Relevant when impersonation is used through online platforms."
+      },
+      {
+        "law": "Information Technology Act Section 67",
+        "title": "Obscene electronic material",
+        "details": "Relevant where obscene posts or messages are published or sent electronically."
+      }
+    ],
+    "victim_guidance": [
+      "Save screenshots with timestamps, profile URLs, usernames, post links, and any emails or call logs linked to the abuse.",
+      "Block the account only after preserving evidence, and report both to the platform and to the police if there are threats, fake identity, or obscene content."
+    ],
+    "police_guidance": [
+      "Preserve URLs, handles, screenshots, and metadata requests early because social-media content can be deleted quickly.",
+      "Check whether the abuse includes impersonation, obscenity, threats, stalking, or image manipulation so the correct sections are added."
+    ],
+    "evidence": ["Screenshots", "Profile links", "Usernames", "Email headers", "Platform complaint receipts"],
+    "notes": "Online harassment often overlaps with stalking, intimidation, obscenity, or impersonation."
+  }
+]

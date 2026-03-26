@@ -1,9 +1,10 @@
-import React from 'react';
+import React from "react";
+import { useTranslation } from "react-i18next";
 
 function ComplaintWithdraw() {
-    return ( 
-        <h1>Complaint Withdraw</h1>
-     );
+  const { t } = useTranslation();
+
+  return <h1>{t("complaintWithdrawTitle")}</h1>;
 }
 
 export default ComplaintWithdraw;

@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
+import api from "../../api";
 import "./chat.css";
 
 function ChatWidget() {
@@ -7,15 +9,37 @@ function ChatWidget() {
   const [messages, setMessages] = useState([]);
   const [size, setSize] = useState({ width: 320, height: 420 });
   const [expanded, setExpanded] = useState(false);
+  const { t, i18n } = useTranslation();
 
-  const handleSend = () => {
-    if (message.trim() === "") return;
+  const handleSend = async () => {
+    const trimmedMessage = message.trim();
+    if (trimmedMessage === "") return;
 
-    setMessages([...messages, { text: message, sender: "user" }]);
+    setMessages((prev) => [...prev, { text: trimmedMessage, sender: "user" }]);
     setMessage("");
+
+    try {
+      const response = await api.post("legal-chatbot/", {
+        message: trimmedMessage,
+        user_type: "police",
+        language: i18n.language,
+      });
+
+      const reply = response.data?.reply || {};
+      const replyText = [
+        `${t("crimeType")}: ${reply["Crime Type"] || ""}`,
+        `${t("ipcSections")}: ${reply["IPC Sections"] || ""}`,
+        `${t("explanation")}: ${reply["Explanation"] || ""}`,
+        `${t("actionSteps")}: ${reply["Action Steps"] || ""}`,
+      ].join("\n");
+
+      setMessages((prev) => [...prev, { text: replyText, sender: "bot" }]);
+    } catch (error) {
+      const errorMessage = error?.response?.data?.error || t("unableLegalGuidance");
+      setMessages((prev) => [...prev, { text: errorMessage, sender: "bot" }]);
+    }
   };
 
-  // ✅ Resize Logic
   const startResize = (e, direction) => {
     e.preventDefault();
 
@@ -24,22 +48,14 @@ function ChatWidget() {
     const startWidth = size.width;
     const startHeight = size.height;
 
-    const onMouseMove = (e) => {
+    const onMouseMove = (event) => {
       let newWidth = startWidth;
       let newHeight = startHeight;
 
-      if (direction === "right") {
-        newWidth = startWidth + (e.clientX - startX);
-      }
-      if (direction === "bottom") {
-        newHeight = startHeight + (e.clientY - startY);
-      }
-      if (direction === "left") {
-        newWidth = startWidth - (e.clientX - startX);
-      }
-      if (direction === "top") {
-        newHeight = startHeight - (e.clientY - startY);
-      }
+      if (direction === "right") newWidth = startWidth + (event.clientX - startX);
+      if (direction === "bottom") newHeight = startHeight + (event.clientY - startY);
+      if (direction === "left") newWidth = startWidth - (event.clientX - startX);
+      if (direction === "top") newHeight = startHeight - (event.clientY - startY);
 
       setSize({
         width: Math.max(250, newWidth),
@@ -58,7 +74,6 @@ function ChatWidget() {
 
   return (
     <>
-      {/* Floating Button */}
       <div
         className="chat-button"
         onClick={() => {
@@ -72,73 +87,62 @@ function ChatWidget() {
         🤖
       </div>
 
-      {/* Popup */}
-      {!open && (
-        <div className="chat-popup-msg">
-          👋 Hi, Need legal help?
-        </div>
-      )}
+      {!open && <div className="chat-popup-msg">👋 {t("chatHelpPrompt")}</div>}
 
-      {/* Chat Window */}
       {open && (
-                    <div
-            className="chat-window"
-            style={{
-                width: expanded ? "700px" : size.width,
-                height: expanded ? "500px" : size.height,
-            }}
-            >
-          {/* 🔥 Resize Handles */}
+        <div
+          className="chat-window"
+          style={{
+            width: expanded ? "700px" : size.width,
+            height: expanded ? "500px" : size.height,
+          }}
+        >
           <div className="resize-handle top" onMouseDown={(e) => startResize(e, "top")} />
           <div className="resize-handle right" onMouseDown={(e) => startResize(e, "right")} />
           <div className="resize-handle bottom" onMouseDown={(e) => startResize(e, "bottom")} />
           <div className="resize-handle left" onMouseDown={(e) => startResize(e, "left")} />
 
-          {/* Header */}
           <div className="chat-header">
-            Legal Assistant
+            {t("legalAssistant")}
             <div style={{ display: "flex", gap: "10px" }}>
-    
-                {/* 🔥 Expand / Collapse Button */}
-                <span
-                onClick={() => setExpanded(!expanded)}
-                style={{ cursor: "pointer",color:"rgb(0, 0, 0)" }}
-                title="Resize"
-                >
+              <span onClick={() => setExpanded(!expanded)} style={{ cursor: "pointer", color: "rgb(0, 0, 0)" }} title="Resize">
                 {expanded ? "🗗" : "🗖"}
-                </span>
+              </span>
 
-                {/* Close Button */}
-                                <span
+              <span
                 onClick={() => setOpen(false)}
                 style={{
-                    cursor: "pointer",
-                    color: "black",
-                    fontSize: "24px",
-                    marginTop: "-4px",
+                  cursor: "pointer",
+                  color: "black",
+                  fontSize: "24px",
+                  marginTop: "-4px",
                 }}
-                >
+              >
                 ×
-                </span>
-
+              </span>
             </div>
           </div>
 
-          {/* Messages */}
           <div className="chat-body">
-            {messages.length === 0 && (
-              <p>👋 Hello! I can help with FIR, legal queries.</p>
-            )}
+            {messages.length === 0 && <p>👋 {t("chatGreeting")}</p>}
 
             {messages.map((msg, index) => (
-              <div key={index} style={{ textAlign: "right", marginTop: "8px" }}>
+              <div
+                key={index}
+                style={{
+                  textAlign: msg.sender === "user" ? "right" : "left",
+                  marginTop: "8px",
+                }}
+              >
                 <span
                   style={{
-                    background: "rgb(254, 92, 92)",
-                    color: "white",
+                    background: msg.sender === "user" ? "rgb(254, 92, 92)" : "rgb(245, 245, 245)",
+                    color: msg.sender === "user" ? "white" : "black",
                     padding: "8px 12px",
                     borderRadius: "15px",
                     display: "inline-block",
+                    whiteSpace: "pre-line",
+                    maxWidth: "90%",
                   }}
                 >
                   {msg.text}
@@ -147,7 +151,6 @@ function ChatWidget() {
             ))}
           </div>
 
-          {/* Input */}
           <div style={{ position: "relative", padding: "10px" }}>
             <input
               value={message}
@@ -155,7 +158,7 @@ function ChatWidget() {
               onKeyDown={(e) => {
                 if (e.key === "Enter") handleSend();
               }}
-              placeholder="Ask something..."
+              placeholder={t("askSomething")}
               style={{
                 width: "100%",
                 padding: "10px 40px 10px 10px",

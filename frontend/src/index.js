@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./index.css";
+import "./i18n";
 import HomePage from "./landing_page/home/HomePage";
 import AboutPage from "./landing_page/about/AboutPage";
 import ContactPage from "./landing_page/contact/ContactPage";
@@ -18,6 +19,7 @@ import ForensicSketch from "./landing_page/PoliceDashboard/ForensicSketch";
 import Language from "./landing_page/PoliceDashboard/Language";
 import LegalAssist from "./landing_page/PoliceDashboard/LegalAssist";       
 import FIRList from "./landing_page/PoliceDashboard/FIRList";
+import ComplaintDetails from "./landing_page/PoliceDashboard/ComplaintDetails";
 import PoliceNavbar from "./landing_page/PoliceDashboard/PoliceNavbar";
 import Status from "./landing_page/PoliceDashboard/Status";
 import LearnForPolice from "./landing_page/PoliceDashboard/LearnForPolice";
@@ -55,6 +57,7 @@ root.render(
       <Route path="/LoginVictim" element={<LoginVictim />} />
      <Route path="/PoliceDashboard" element={<PoliceDashboard />}>
       <Route index element={<FIRList />} />
+      <Route path="complaint/:complaint_id" element={<ComplaintDetails />} />
       <Route path="ForensicSketch" element={<ForensicSketch />} />
       <Route path="LegalAssist" element={<LegalAssist />} />
       <Route path="Language" element={<Language />} />

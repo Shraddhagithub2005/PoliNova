@@ -25,5 +25,8 @@ urlpatterns = [
     #  Police can update complaint status (Accept / Reject)
     path("victim/complaint/update-status/<str:complaint_id>/", views.update_complaint_status, name="update_complaint_status"),
     path("victim/complaint/detail/<str:complaint_id>/", views.complaint_detail, name="complaint_detail"),
+    path("victim/complaint/delete/<str:complaint_id>/", views.delete_complaint, name="delete_complaint"),
+    path("legal-chatbot/", views.legal_chatbot_api, name="legal_chatbot_api"),
+    path("legal-assistant/chat/", views.legal_assistant_chat, name="legal_assistant_chat"),
 
 ]

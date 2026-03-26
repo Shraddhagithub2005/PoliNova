@@ -1,9 +1,10 @@
-import React from 'react';
+import React from "react";
+import { useTranslation } from "react-i18next";
 
 function Status() {
-    return (  
-        <h1>Status</h1>
-    );
+  const { t } = useTranslation();
+
+  return <h1>{t("statusTitle")}</h1>;
 }
 
 export default Status;

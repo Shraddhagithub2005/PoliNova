@@ -1,49 +1,44 @@
 import React from "react";
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 function PoliceHero() {
+  const { t } = useTranslation();
   const cards = [
     {
-      id: "UserProfile",
-      title: "User Profile",
-      text: "View and edit your profile information.",
+      id: "FIRList",
+      title: t("firList"),
+      text: t("checkProgressComplaints"),
       img: "../media/images/EducationHero.jpg",
-      path: "./UserProfile",
+      path: "./",
     },
     {
-      id: "ReportComplaint",
-      title: "Report Complaint",
-      text: "File a new complaint easily.",
+      id: "ForensicSketch",
+      title: t("forensicSketch"),
+      text: t("extraResources"),
       img: "../media/images/EducationHero.jpg",
-      path:"./ReportComplaint",
+      path: "./ForensicSketch",
     },
     {
-      id: "CheckStatus",
-      title: "Check Status",
-      text: "Check the progress of your complaints.",
+      id: "Status",
+      title: t("statusTitle"),
+      text: t("checkStatus"),
       img: "../media/images/EducationHero.jpg",
-      path: "./CheckStatus",
+      path: "./Status",
     },
     {
-      id: "ComplaintWithdraw",
-      title: "Complaint Withdraw",
-      text: "Withdraw a complaint if needed.",
+      id: "LearnForPolice",
+      title: t("learnForPoliceTitle"),
+      text: t("extraResources"),
       img: "../media/images/EducationHero.jpg",
-      path:"./ComplaintWithdraw",
+      path: "./LearnForPolice",
     },
     {
-      id: "Learn",
-      title: "Learning",
-      text: "Extra resources.",
+      id: "LegalAssist",
+      title: t("legalAssistantMenu"),
+      text: t("askQuestionsGetHelp"),
       img: "../media/images/EducationHero.jpg",
-      path:'./Learn',
-    },
-    {
-      id: "Chatbot",
-      title: "Chatbot",
-      text: "Ask questions and get instant help.",
-      img: "../media/images/EducationHero.jpg",
-      path: "./Chatbot",
+      path: "./LegalAssist",
     },
   ];
 
@@ -58,9 +53,8 @@ function PoliceHero() {
                 <h5 className="card-title">{card.title}</h5>
                 <p className="card-text">{card.text}</p>
                 <Link to={card.path} className="btn btn-primary">
-                  Go to {card.title}
+                  {t("goTo", { title: card.title })}
                 </Link>
-                
               </div>
             </div>
           </div>

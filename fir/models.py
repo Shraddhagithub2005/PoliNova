@@ -76,6 +76,9 @@ class Complaint(models.Model):
     delay = models.CharField(max_length=10, default="No")
     location = models.CharField(max_length=100, default="Unknown")
     description = models.TextField(default="")
+    status = models.CharField(max_length=20, default="Pending")
+    notification = models.CharField(max_length=255, default="", blank=True)
+    timeline = models.JSONField(default=list, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

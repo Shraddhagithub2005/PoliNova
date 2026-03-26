@@ -11,3 +11,4 @@ drf-yasg==1.21.7   # For API documentation (optional)
 
 qrcode[pil]
 pyotp
+googletrans==4.0.0-rc1

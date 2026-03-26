@@ -6,6 +6,7 @@ import io
 import re
 import string
 from datetime import datetime
+from django.forms.models import model_to_dict
 from django.core.mail import send_mail
 from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -17,6 +18,135 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 from .serializers import VictimSerializer
+from .legal_assistant import build_answer, generate_legal_chatbot_reply
+
+try:
+    from googletrans import Translator
+except ImportError:
+    Translator = None
+
+
+def _build_complaint_response(complaint):
+    data = model_to_dict(complaint)
+    data["crime_type"] = complaint.category
+    data["email"] = complaint.victim_email
+
+    victim = Victim.objects.filter(email=complaint.victim_email).first()
+    if victim:
+        full_name = " ".join(
+            part for part in [victim.name, victim.first_name, victim.last_name] if part
+        ).strip()
+        address_parts = [victim.address, victim.city, victim.state, victim.pincode, victim.country]
+        data["name"] = full_name or None
+        data["phone"] = victim.mobile or victim.phone
+        data["victim_name"] = full_name or None
+        data["victim_phone"] = victim.mobile or victim.phone
+        data["victim_address"] = ", ".join(part for part in address_parts if part) or None
+    else:
+        data["name"] = None
+        data["phone"] = None
+        data["victim_name"] = None
+        data["victim_phone"] = None
+        data["victim_address"] = None
+
+    return data
+
+
+def _current_timeline_time():
+    return timezone.localtime(timezone.now()).strftime("%Y-%m-%d %H:%M:%S")
+
+
+STATUS_TRANSLATIONS = {
+    "hi": {
+        "Pending": "लंबित",
+        "Accepted": "स्वीकृत",
+        "Rejected": "अस्वीकृत",
+        "Under Review": "समीक्षा के अंतर्गत",
+        "Submitted": "जमा किया गया",
+    }
+}
+
+
+def _append_timeline_entry(timeline, status_value):
+    timeline = list(timeline or [])
+    if timeline and timeline[-1].get("status") == status_value:
+        return timeline
+
+    timeline.append(
+        {
+            "status": status_value,
+            "time": _current_timeline_time(),
+        }
+    )
+    return timeline
+
+
+def translate_text(text, lang):
+    if not text or lang != "hi":
+        return text
+
+    if Translator is None:
+        return text
+
+    try:
+        translator = Translator()
+        return translator.translate(text, dest=lang).text
+    except Exception:
+        return text
+
+
+def translate_status_label(status_value, language):
+    if language == "en":
+        return status_value
+
+    return STATUS_TRANSLATIONS.get(language, {}).get(status_value, status_value)
+
+
+def translate_complaint_payload(payload, language):
+    if language == "en":
+        return payload
+
+    translated_payload = dict(payload)
+    translated_payload["status"] = translate_status_label(payload.get("status"), language)
+    translated_payload["notification"] = translate_text(payload.get("notification"), language)
+
+    timeline = []
+    for entry in payload.get("timeline") or []:
+        timeline.append(
+            {
+                "status": translate_status_label(entry.get("status"), language),
+                "time": entry.get("time"),
+            }
+        )
+    translated_payload["timeline"] = timeline
+    return translated_payload
+
+
+def translate_payload(value, target_lang):
+    if target_lang == "en":
+        return value
+
+    if isinstance(value, str):
+        return translate_text(value, target_lang)
+
+    if isinstance(value, list):
+        return [translate_payload(item, target_lang) for item in value]
+
+    if isinstance(value, dict):
+        return {key: translate_payload(item, target_lang) for key, item in value.items()}
+
+    return value
+
+
+def translate_chatbot_reply(reply, lang):
+    if lang != "hi" or not isinstance(reply, dict):
+        return reply
+
+    translated_reply = {}
+    for key, value in reply.items():
+        translated_reply[key] = translate_text(value, lang) if isinstance(value, str) else value
+
+    return translated_reply
 
 
 # ------------------- EMAIL VERIFICATION -------------------
@@ -384,7 +514,6 @@ def save_complaint(request):
                 time_value = datetime.now().strftime("%H:%M:%S")
 
             complaint = Complaint(
-                complaint_id=data.get("complaint_id"),
                 victim_email=data.get("victim_email"),
                 category=data.get("category"),
                 subCategory=data.get("subCategory"),
@@ -393,11 +522,27 @@ def save_complaint(request):
                 date=data.get("date"),
                 time=time_value,   # ✅ fixed
                 delay=data.get("delay", "No"),
-                created_at=timezone.now(),
+                status=data.get("status", "Pending"),
+                notification="",
+                timeline=[
+                    {
+                        "status": "Submitted",
+                        "time": _current_timeline_time(),
+                    }
+                ],
             )
 
             complaint.save()
-            return JsonResponse({"message": "Complaint saved successfully!"}, status=200)
+            return JsonResponse(
+                {
+                    "message": "Complaint saved successfully!",
+                    "complaint_id": complaint.complaint_id,
+                    "status": complaint.status,
+                    "notification": complaint.notification,
+                    "timeline": complaint.timeline,
+                },
+                status=200,
+            )
 
         except Exception as e:
             print("❌ Complaint save error:", str(e))
@@ -411,19 +556,18 @@ def save_complaint(request):
 def complaint_list(request):
     if request.method == "GET":
         try:
-            complaints = Complaint.objects.all().values(
-                "complaint_id",
-                "category",
-                "description",
-                "date",
-                "time",
-                "location",
-                "delay",
-                "victim_email",
-                "created_at",
-            ).order_by("-created_at")
+            victim_email = request.GET.get("victim_email")
+            language = (request.GET.get("language") or "en").strip().lower()
+            complaints = Complaint.objects.all().order_by("-created_at")
 
-            return JsonResponse(list(complaints), safe=False, status=200)
+            if victim_email:
+                complaints = complaints.filter(victim_email=victim_email)
+
+            response_data = [
+                translate_complaint_payload(_build_complaint_response(complaint), language)
+                for complaint in complaints
+            ]
+            return JsonResponse(response_data, safe=False, status=200)
         except Exception as e:
             print("❌ Complaint list error:", e)
             return JsonResponse({"error": str(e)}, status=500)
@@ -437,15 +581,44 @@ def update_complaint_status(request, complaint_id):
         try:
             data = json.loads(request.body)
             new_status = data.get("status")
+            language = (data.get("language") or "en").strip().lower()
 
             if new_status not in ["Pending", "Accepted", "Rejected"]:
                 return JsonResponse({"error": "Invalid status value"}, status=400)
 
-            complaint = Complaint.objects.get(id=complaint_id)
+            complaint = Complaint.objects.get(complaint_id=complaint_id)
+            timeline = complaint.timeline or []
+            timeline = _append_timeline_entry(timeline, "Under Review")
+            timeline = _append_timeline_entry(timeline, new_status)
+
             complaint.status = new_status
+            complaint.notification = (
+                "Your complaint has been accepted ✅"
+                if new_status == "Accepted"
+                else "Your complaint has been rejected ❌"
+                if new_status == "Rejected"
+                else ""
+            )
+            complaint.timeline = timeline
             complaint.save()
 
-            return JsonResponse({"message": "Complaint status updated successfully"}, status=200)
+            response_payload = translate_complaint_payload(
+                {
+                    "complaint_id": complaint.complaint_id,
+                    "status": complaint.status,
+                    "notification": complaint.notification,
+                    "timeline": complaint.timeline,
+                },
+                language,
+            )
+
+            return JsonResponse(
+                {
+                    "message": "Complaint status updated successfully",
+                    **response_payload,
+                },
+                status=200,
+            )
         except Complaint.DoesNotExist:
             return JsonResponse({"error": "Complaint not found"}, status=404)
         except Exception as e:
@@ -458,17 +631,9 @@ def update_complaint_status(request, complaint_id):
 def complaint_detail(request, complaint_id):
     if request.method == "GET":
         try:
-            from django.forms.models import model_to_dict
+            language = (request.GET.get("language") or "en").strip().lower()
             complaint = Complaint.objects.get(complaint_id=complaint_id)
-            data = model_to_dict(complaint)
-
-            # If you have a Victim model linked, include it
-            if hasattr(complaint, "victim"):
-                data["victim_name"] = complaint.victim.full_name
-                data["victim_email"] = complaint.victim.email
-                data["victim_phone"] = complaint.victim.phone
-                data["victim_address"] = complaint.victim.address
-
+            data = translate_complaint_payload(_build_complaint_response(complaint), language)
             return JsonResponse(data, status=200)
         except Complaint.DoesNotExist:
             return JsonResponse({"error": "Complaint not found"}, status=404)
@@ -476,5 +641,87 @@ def complaint_detail(request, complaint_id):
             print("❌ Complaint detail error:", e)
             return JsonResponse({"error": str(e)}, status=500)
     return JsonResponse({"error": "Invalid request"}, status=405)
+
+
+@csrf_exempt
+def delete_complaint(request, complaint_id):
+    if request.method == "DELETE":
+        try:
+            complaint = Complaint.objects.get(complaint_id=complaint_id)
+            complaint.delete()
+            return JsonResponse({"message": "Complaint deleted successfully"}, status=200)
+        except Complaint.DoesNotExist:
+            return JsonResponse({"error": "Complaint not found"}, status=404)
+        except Exception as e:
+            print("âŒ Delete complaint error:", e)
+            return JsonResponse({"error": str(e)}, status=500)
+
+    return JsonResponse({"error": "Invalid request method"}, status=405)
+
+
+@csrf_exempt
+def legal_assistant_chat(request):
+    if request.method == "OPTIONS":
+        return JsonResponse({"message": "OK"}, status=200)
+
+    if request.method != "POST":
+        return JsonResponse({"error": "Invalid request method"}, status=405)
+
+    try:
+        data = json.loads(request.body.decode("utf-8"))
+    except json.JSONDecodeError:
+        return JsonResponse({"error": "Invalid JSON"}, status=400)
+
+    message = (data.get("message") or "").strip()
+    role = (data.get("user_type") or data.get("role") or "victim").strip().lower()
+    language = (data.get("language") or "en").strip().lower()
+
+    if role not in {"victim", "police"}:
+        return JsonResponse({"error": "Role must be either victim or police"}, status=400)
+
+    if language not in {"en", "hi"}:
+        return JsonResponse({"error": "language must be either 'en' or 'hi'"}, status=400)
+
+    if not message:
+        return JsonResponse({"error": "Message is required"}, status=400)
+
+    response_payload = build_answer(message=message, role=role)
+    response_payload["role"] = role
+    response_payload["language"] = language
+    response_payload = translate_payload(response_payload, language)
+    response_payload["role"] = role
+    response_payload["language"] = language
+    return JsonResponse(response_payload, status=200)
+
+
+@csrf_exempt
+def legal_chatbot_api(request):
+    if request.method == "OPTIONS":
+        return JsonResponse({"message": "OK"}, status=200)
+
+    if request.method != "POST":
+        return JsonResponse({"error": "Invalid request method"}, status=405)
+
+    try:
+        data = json.loads(request.body.decode("utf-8"))
+    except json.JSONDecodeError:
+        return JsonResponse({"error": "Invalid JSON"}, status=400)
+
+    message = (data.get("message") or "").strip()
+    user_type = (data.get("user_type") or "").strip().lower()
+    language = (data.get("language") or "en").strip().lower()
+
+    if not message:
+        return JsonResponse({"error": "Message is required"}, status=400)
+
+    if user_type not in {"police", "victim"}:
+        return JsonResponse({"error": "user_type must be 'police' or 'victim'"}, status=400)
+
+    if language not in {"en", "hi"}:
+        return JsonResponse({"error": "language must be either 'en' or 'hi'"}, status=400)
+
+    reply = generate_legal_chatbot_reply(message=message, user_type=user_type)
+    reply = translate_chatbot_reply(reply, language)
+    return JsonResponse({"reply": reply, "language": language}, status=200)
 
 

@@ -1,9 +1,10 @@
-import React from 'react';
+import React from "react";
+import { useTranslation } from "react-i18next";
 
 function LearnForPolice() {
-    return ( 
-        <h1>Learn</h1>
-     );
+  const { t } = useTranslation();
+
+  return <h1>{t("learnForPoliceTitle")}</h1>;
 }
 
 export default LearnForPolice;

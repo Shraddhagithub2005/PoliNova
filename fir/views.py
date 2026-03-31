@@ -19,6 +19,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from .serializers import VictimSerializer
 from .legal_assistant import build_answer, generate_legal_chatbot_reply
+from .models import Suspect, Complaint
 
 try:
     from googletrans import Translator
@@ -724,4 +725,84 @@ def legal_chatbot_api(request):
     reply = translate_chatbot_reply(reply, language)
     return JsonResponse({"reply": reply, "language": language}, status=200)
 
+import json
+from .models import Suspect, Complaint
 
+def save_suspect(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+
+        complaint_id = data.get("complaint_id")
+
+        try:
+            complaint = Complaint.objects.get(complaint_id=complaint_id)
+
+            Suspect.objects.create(
+                complaint=complaint,   # ✅ LINK
+                gender=data.get("gender"),
+                age=data.get("age"),
+                faceShape=data.get("faceShape"),
+                skinTone=data.get("skinTone"),
+                forehead=data.get("forehead"),
+                hairType=data.get("hairType"),
+                hairColor=data.get("hairColor"),
+                eyeColor=data.get("eyeColor"),
+                eyeShape=data.get("eyeShape"),
+                eyebrow=data.get("eyebrow"),
+                noseSize=data.get("noseSize"),
+                noseShape=data.get("noseShape"),
+                lipType=data.get("lipType"),
+                beard=data.get("beard"),
+                mustache=data.get("mustache"),
+                identifiers=data.get("identifiers"),
+            )
+
+            return JsonResponse({"message": "Saved successfully"})
+
+        except Complaint.DoesNotExist:
+            return JsonResponse({"error": "Invalid complaint_id"}, status=400)
+
+
+def get_suspects(request):
+    suspects = Suspect.objects.select_related("complaint").all()
+
+    data = []
+    for s in suspects:
+        if s.complaint:   # ✅ ensure relation exists
+            data.append({
+                "complaint_id": s.complaint.complaint_id,
+                "gender": s.gender,
+                "age": s.age
+            })
+
+    return JsonResponse(data, safe=False)
+
+
+def get_suspect_by_complaint(request, complaint_id):
+    try:
+        suspect = Suspect.objects.select_related("complaint").get(
+            complaint__complaint_id=complaint_id
+        )
+
+        return JsonResponse({
+        "complaint_id": suspect.complaint.complaint_id,
+        "gender": suspect.gender,
+        "age": suspect.age,
+        "faceShape": suspect.faceShape,
+        "skinTone": suspect.skinTone,
+        "forehead": suspect.forehead,      # ✅ ADD
+        "hairType": suspect.hairType,
+        "hairColor": suspect.hairColor,
+        "eyeShape": suspect.eyeShape,
+        "eyeColor": suspect.eyeColor,
+        "eyebrow": suspect.eyebrow,        # ✅ ADD
+        "noseSize": suspect.noseSize,      # ✅ ADD
+        "noseShape": suspect.noseShape,    # ✅ ADD
+        "lipType": suspect.lipType,        # ✅ ADD
+        "beard": suspect.beard,
+        "mustache": suspect.mustache,
+        "identifiers": suspect.identifiers
+        })
+
+    except Suspect.DoesNotExist:
+        return JsonResponse({"error": "Suspect not found"}, status=404)

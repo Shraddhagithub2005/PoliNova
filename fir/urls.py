@@ -1,5 +1,8 @@
 from django.urls import path
 from . import views
+from .views import save_suspect
+from .views import get_suspects
+from .views import get_suspect_by_complaint
 
 urlpatterns = [
     # Email verification & QR
@@ -20,6 +23,10 @@ urlpatterns = [
     # Complaint APIs
     path("victim/complaint/save/", views.save_complaint, name="save_complaint"),
     path("victim/complaint/list/", views.complaint_list, name="complaint_list"),
+    path("suspect/save/", save_suspect),
+    path("suspects/", get_suspects),
+    path('suspect/<int:complaint_id>/', get_suspect_by_complaint),
+    
  
 
     #  Police can update complaint status (Accept / Reject)

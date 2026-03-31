@@ -2,6 +2,7 @@ from django.db import models
 from django.utils import timezone
 from django.contrib.auth.hashers import make_password  
 
+
 class Victim(models.Model):
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
@@ -83,3 +84,25 @@ class Complaint(models.Model):
 
     def __str__(self):
         return f"Complaint {self.complaint_id} - {self.category}"
+    
+from django.db import models
+
+class Suspect(models.Model):
+    complaint = models.ForeignKey("Complaint", on_delete=models.CASCADE, null=True, blank=True)
+
+    gender = models.CharField(max_length=20)
+    age = models.CharField(max_length=20)
+    faceShape = models.CharField(max_length=50)
+    skinTone = models.CharField(max_length=50)
+    forehead = models.CharField(max_length=50)
+    hairType = models.CharField(max_length=50)
+    hairColor = models.CharField(max_length=50)
+    eyeColor = models.CharField(max_length=50)
+    eyeShape = models.CharField(max_length=50)
+    eyebrow = models.CharField(max_length=50)
+    noseSize = models.CharField(max_length=50)
+    noseShape = models.CharField(max_length=50)
+    lipType = models.CharField(max_length=50)
+    beard = models.CharField(max_length=50)
+    mustache = models.CharField(max_length=50)
+    identifiers = models.TextField(blank=True, null=True)

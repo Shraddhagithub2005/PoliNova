@@ -11,7 +11,7 @@ SECRET_KEY = 'django-insecure-^sm^p4tn^^z94o5idufc%(8+50deebaugjl0nryh%$!nx26==j
 
 DEBUG = True
 
-ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
+ALLOWED_HOSTS = ["*"]
 
 # Application definition
 INSTALLED_APPS = [
@@ -97,6 +97,9 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = "smartfir26@gmail.com"
 EMAIL_HOST_PASSWORD = "owjpfocshcjzlcyp"
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+
+
 
 
 

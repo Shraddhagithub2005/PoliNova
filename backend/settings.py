@@ -69,8 +69,12 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # Database
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'smartfir_db',
+        'USER': 'root',
+        'PASSWORD': 'Root@123',
+        'HOST': 'localhost',
+        'PORT': '3306',
     }
 }
 
@@ -88,6 +92,11 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Media files (Generated Sketches)
+MEDIA_URL = '/media/'
+import os
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # ✅ Email (using Gmail SMTP)
 EMAIL_BACKEND = "fir.email_backend.NoVerifySMTPBackend"

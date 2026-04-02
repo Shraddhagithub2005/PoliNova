@@ -26,6 +26,8 @@ urlpatterns = [
     path("suspect/save/", save_suspect),
     path("suspects/", get_suspects),
     path('suspect/<int:complaint_id>/', get_suspect_by_complaint),
+    path('police/generate-sketch/', views.generate_sketch_api, name="generate_sketch_api"),
+    path('police/save-sketch/', views.save_sketch_api, name="save_sketch_api"),
     
  
 

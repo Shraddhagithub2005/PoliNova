@@ -3,14 +3,14 @@ import { useNavigate } from "react-router-dom";
 
 function ForensicSketch() {
     const [suspects, setSuspects] = useState([]);
+    const [viewImage, setViewImage] = useState(null);
     const navigate = useNavigate(); 
 
     useEffect(() => {
         fetch("http://127.0.0.1:8000/api/suspects/")
             .then(res => res.json())
             .then(data => {
-                console.log("Suspects Data:", data); // ✅ DEBUG
-                setSuspects(Array.isArray(data) ? data : []); // ✅ safer
+                setSuspects(Array.isArray(data) ? data : []);
             })
             .catch(err => console.error(err));
     }, []);
@@ -19,7 +19,7 @@ function ForensicSketch() {
         console.log("Generating sketch for Complaint ID:", complaintId);
 
         if (complaintId !== undefined && complaintId !== null) {
-            navigate(`/suspect/${complaintId}`);
+            navigate(`/PoliceDashboard/generate-sketch/${complaintId}`);
         } else {
             console.error("Complaint ID is undefined ❌");
             alert("No complaint ID found.");
@@ -48,8 +48,6 @@ function ForensicSketch() {
                         suspects.map((s, index) => {
                             const complaintId = s.complaint_id; // ✅ FIXED KEY
 
-                            console.log("Row Data:", s); // ✅ DEBUG
-
                             return (
                                 <tr key={index}>
                                     <td style={cellStyle}>
@@ -59,8 +57,6 @@ function ForensicSketch() {
                                     <td style={cellStyle}>
                                         <button 
                                             onClick={() => {
-                                                console.log("View Click ID:", complaintId);
-
                                                 if (complaintId !== undefined && complaintId !== null) {
                                                     navigate(`/suspect/${complaintId}`);
                                                 } else {
@@ -81,6 +77,15 @@ function ForensicSketch() {
                                         >
                                             Generate
                                         </button>
+                                        
+                                        {s.sketch_url && (
+                                            <button 
+                                                onClick={() => setViewImage(`http://127.0.0.1:8000${s.sketch_url}`)} 
+                                                style={{...buttonStyle, backgroundColor: '#28a745', marginLeft: '10px'}}
+                                            >
+                                                View Saved Sketch
+                                            </button>
+                                        )}
                                     </td>
                                 </tr>
                             );
@@ -88,9 +93,41 @@ function ForensicSketch() {
                     )}
                 </tbody>
             </table>
+            
+            {viewImage && (
+                <div style={modalOverlayStyle} onClick={() => setViewImage(null)}>
+                    <div style={modalContentStyle} onClick={(e) => e.stopPropagation()}>
+                        <h3 style={{marginTop: 0}}>Saved Forensic Sketch</h3>
+                        <img src={viewImage} alt="Suspect Sketch" style={{maxWidth: '100%', maxHeight: '70vh', borderRadius: '8px'}} />
+                        <br/>
+                        <button onClick={() => setViewImage(null)} style={{...buttonStyle, backgroundColor: '#333', marginTop: '15px'}}>
+                            Close Image
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
+
+const modalOverlayStyle = {
+    position: 'fixed', 
+    top: 0, left: 0, right: 0, bottom: 0, 
+    backgroundColor: 'rgba(0,0,0,0.7)', 
+    display: 'flex', 
+    justifyContent: 'center', 
+    alignItems: 'center',
+    zIndex: 1000
+};
+
+const modalContentStyle = {
+    backgroundColor: 'white', 
+    padding: '20px', 
+    borderRadius: '10px', 
+    textAlign: 'center',
+    boxShadow: '0 4px 6px rgba(0,0,0,0.3)',
+    maxWidth: '500px'
+};
 
 const cellStyle = {
     border: '1px solid #ddd',

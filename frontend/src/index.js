@@ -18,6 +18,7 @@ import LoginVictim from "./landing_page/login/LoginVictim";
 
 import PoliceDashboard from "./landing_page/PoliceDashboard/PoliceDashboard";
 import ForensicSketch from "./landing_page/PoliceDashboard/ForensicSketch";
+import GenerateSketchView from "./landing_page/PoliceDashboard/GenerateSketchView";
 import Language from "./landing_page/PoliceDashboard/Language";
 import LegalAssist from "./landing_page/PoliceDashboard/LegalAssist";       
 import FIRList from "./landing_page/PoliceDashboard/FIRList";
@@ -63,6 +64,7 @@ root.render(
         <Route index element={<FIRList />} />
         <Route path="complaint/:complaint_id" element={<ComplaintDetails />} />
         <Route path="ForensicSketch" element={<ForensicSketch />} />
+        <Route path="generate-sketch/:complaintId" element={<GenerateSketchView />} />
         <Route path="LegalAssist" element={<LegalAssist />} />
         <Route path="Language" element={<Language />} />
         <Route path="Status" element={<Status />} />

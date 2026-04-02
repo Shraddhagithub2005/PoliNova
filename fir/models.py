@@ -19,26 +19,18 @@ class Victim(models.Model):
     is_phone_verified = models.BooleanField(default=False)
     created_at = models.DateTimeField(default=timezone.now)
 
-    # --- START: NEW FIELDS ADDED TO MATCH REACT FORM ---
+    # Additional fields to match React form
     title = models.CharField(max_length=10, blank=True, null=True)
     name = models.CharField(max_length=100, blank=True, null=True)
     mobile = models.CharField(max_length=15, blank=True, null=True)
-    email = models.EmailField(unique=True, blank=False, null=False)
     dob = models.DateField(null=True, blank=True)
     gender = models.CharField(max_length=10, blank=True, null=True)
     relationType = models.CharField(max_length=50, blank=True, null=True)
     relationName = models.CharField(max_length=100, blank=True, null=True)
-   
-
-    password = models.CharField(max_length=255, default="", blank=True)
-    is_verified = models.BooleanField(default=False)
-    is_phone_verified = models.BooleanField(default=False)
-    created_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return f"{self.first_name} {self.last_name} ({self.email})"
 
-    #  Automatically hash password before saving
     def save(self, *args, **kwargs):
         if self.password and not self.password.startswith('pbkdf2_sha256$'):
             self.password = make_password(self.password)
@@ -55,8 +47,8 @@ class EmailVerification(models.Model):
 
 
 class PhoneVerification(models.Model):
-    phone = models.CharField(max_length=15, unique=True)  # fine
-    secret = models.CharField(max_length=32, blank=True, null=True)  # for pyotp
+    phone = models.CharField(max_length=15, unique=True)
+    secret = models.CharField(max_length=32, blank=True, null=True)
     verified = models.BooleanField(default=False)
     created_at = models.DateTimeField(default=timezone.now)
 
@@ -85,7 +77,6 @@ class Complaint(models.Model):
     def __str__(self):
         return f"Complaint {self.complaint_id} - {self.category}"
     
-from django.db import models
 
 class Suspect(models.Model):
     complaint = models.ForeignKey("Complaint", on_delete=models.CASCADE, null=True, blank=True)
@@ -106,3 +97,11 @@ class Suspect(models.Model):
     beard = models.CharField(max_length=50)
     mustache = models.CharField(max_length=50)
     identifiers = models.TextField(blank=True, null=True)
+
+    # Forensic Sketch Additions
+    sketch_image = models.ImageField(upload_to='sketches/', blank=True, null=True)
+    sketch_audit_trail = models.JSONField(default=dict, blank=True, null=True)
+
+    def __str__(self):
+        return f"Suspect (Case #{self.complaint_id}) - {self.gender}, {self.age}"
+

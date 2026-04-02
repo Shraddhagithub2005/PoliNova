@@ -19,7 +19,6 @@ function SuspectDetails() {
         return res.json();
       })
       .then(data => {
-        console.log("Suspect Data:", data);
         setSuspect(data);
       })
       .catch(err => {

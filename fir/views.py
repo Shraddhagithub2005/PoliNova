@@ -1,3 +1,4 @@
+
 import json
 import random
 import pyotp
@@ -454,7 +455,7 @@ def save_profile(request):
 
         victim, created = Victim.objects.get_or_create(email=email)
 
-        # ✅ SAFE FIELD UPDATE
+        # ✅ SAFE FIELD UPDATE (Including React Form fields)
         victim.first_name = data.get("first_name", victim.first_name)
         victim.last_name = data.get("last_name", victim.last_name)
         victim.phone = data.get("phone", victim.phone)
@@ -463,6 +464,22 @@ def save_profile(request):
         victim.state = data.get("state", victim.state)
         victim.pincode = data.get("pincode", victim.pincode)
         victim.country = data.get("country", victim.country)
+        
+        # New React Profile Fields
+        victim.title = data.get("title", victim.title)
+        victim.name = data.get("name", victim.name)
+        victim.mobile = data.get("mobile", victim.mobile)
+        victim.gender = data.get("gender", victim.gender)
+        victim.relationType = data.get("relationType", victim.relationType)
+        victim.relationName = data.get("relationName", victim.relationName)
+        
+        # Date parsing for DOB
+        dob = data.get("dob")
+        if dob:
+            try:
+                victim.dob = dob
+            except:
+                pass
 
         victim.save()
 
@@ -654,7 +671,7 @@ def delete_complaint(request, complaint_id):
         except Complaint.DoesNotExist:
             return JsonResponse({"error": "Complaint not found"}, status=404)
         except Exception as e:
-            print("âŒ Delete complaint error:", e)
+            print("â Œ Delete complaint error:", e)
             return JsonResponse({"error": str(e)}, status=500)
 
     return JsonResponse({"error": "Invalid request method"}, status=405)
@@ -769,10 +786,15 @@ def get_suspects(request):
     data = []
     for s in suspects:
         if s.complaint:   # ✅ ensure relation exists
+            sketch_url = None
+            if s.sketch_image and hasattr(s.sketch_image, 'url'):
+                sketch_url = s.sketch_image.url
+            
             data.append({
                 "complaint_id": s.complaint.complaint_id,
                 "gender": s.gender,
-                "age": s.age
+                "age": s.age,
+                "sketch_url": sketch_url
             })
 
     return JsonResponse(data, safe=False)
@@ -806,3 +828,85 @@ def get_suspect_by_complaint(request, complaint_id):
 
     except Suspect.DoesNotExist:
         return JsonResponse({"error": "Suspect not found"}, status=404)
+
+
+from .sketch_generator import generate_sketch_variations
+import os
+import shutil
+from urllib.parse import urlparse
+
+@csrf_exempt
+def generate_sketch_api(request):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body.decode("utf-8"))
+            complaint_id = data.get("complaint_id")
+            
+            if not complaint_id:
+                return JsonResponse({"error": "complaint_id is required"}, status=400)
+                
+            suspect = Suspect.objects.get(complaint__complaint_id=complaint_id)
+            result = generate_sketch_variations(suspect, num_variations=2)
+            
+            return JsonResponse({
+                "success": True,
+                "prompt": result["prompt"],
+                "variations": result["urls"],
+                "errors": result.get("errors", [])
+            })
+            
+        except Suspect.DoesNotExist:
+            return JsonResponse({"error": "Suspect details not found for this complaint."}, status=404)
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=500)
+            
+    return JsonResponse({"error": "Invalid method"}, status=405)
+
+
+@csrf_exempt
+def save_sketch_api(request):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body.decode("utf-8"))
+            complaint_id = data.get("complaint_id")
+            selected_url = data.get("selected_url")
+            prompt = data.get("prompt")
+            officer_id = data.get("officer_id", "Unknown Officer")
+            
+            if not complaint_id or not selected_url:
+                return JsonResponse({"error": "Missing parameters"}, status=400)
+                
+            suspect = Suspect.objects.get(complaint__complaint_id=complaint_id)
+            
+            # Move from temp to permanent
+            original_filename = os.path.basename(urlparse(selected_url).path)
+            temp_path = os.path.join(settings.MEDIA_ROOT, 'temp_sketches', original_filename)
+            
+            if not os.path.exists(temp_path):
+                return JsonResponse({"error": "Selected image not found on server."}, status=404)
+                
+            perm_dir = os.path.join(settings.MEDIA_ROOT, 'sketches')
+            os.makedirs(perm_dir, exist_ok=True)
+            
+            # Save it by their case number explicitly
+            new_filename = f"case_{complaint_id}.jpg"
+            perm_path = os.path.join(perm_dir, new_filename)
+            
+            shutil.copy(temp_path, perm_path)
+            
+            suspect.sketch_image = f"sketches/{new_filename}"
+            suspect.sketch_audit_trail = {
+                "prompt_used": prompt,
+                "officer_id": officer_id,
+                "approved_at": timezone.now().isoformat()
+            }
+            suspect.save()
+            
+            return JsonResponse({"success": True, "message": "Sketch saved to case file successfully.", "final_url": suspect.sketch_image.url if suspect.sketch_image else None})
+            
+        except Suspect.DoesNotExist:
+            return JsonResponse({"error": "Suspect not found"}, status=404)
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=500)
+            
+    return JsonResponse({"error": "Invalid method"}, status=405)

@@ -44,22 +44,7 @@ body {
   flex-wrap: wrap;
 }
 
-/* .btn {
-  background-color: brown;
-  color: white;
-  padding: 12px 28px;
-  border: none;
-  border-radius: 8px;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  text-decoration: none;
-}
 
-.btn:hover {
-  background-color:brown;
-  transform: translateY(-2px);
-} */
 
 @media (max-width: 768px) {
   .portal-section {

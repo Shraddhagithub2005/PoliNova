@@ -1,6 +1,6 @@
 import React from "react";
 
-function Hero() {
+function ContactUs() {
 
   const adminContacts = [
     {
@@ -77,5 +77,4 @@ function Hero() {
 </>
   );
 }
-
-export default Hero;
+export default ContactUs;

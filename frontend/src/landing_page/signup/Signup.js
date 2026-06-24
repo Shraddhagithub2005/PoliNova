@@ -34,7 +34,7 @@ function Signup() {
             validatePassword(value);
         }
 
-        // 🔹 Auto-fetch City, State, Country when Pincode is entered
+        
         if (name === "pincode" && value.length === 6) {
             fetch(`https://api.postalpincode.in/pincode/${value}`)
                 .then((res) => res.json())
@@ -72,13 +72,13 @@ function Signup() {
             headers: {
                 "Content-Type": "application/json",
             },
-            mode: "cors",   // ✅ IMPORTANT
+            mode: "cors",  
             body: JSON.stringify({
                 email: formData.email,
             }),
         });
 
-        // ✅ Check if response exists
+        
         if (!response) {
             throw new Error("No response from server");
         }
@@ -186,7 +186,7 @@ function Signup() {
     const handleSignup = async (e) => {
         e.preventDefault();
 
-        // ✅ Check for empty fields before proceeding
+      
         for (const [key, value] of Object.entries(formData)) {
             if (!value && key !== "otp") {
                 alert(`Please fill the ${key} field before signing up!`);

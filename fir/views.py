@@ -155,7 +155,7 @@ def translate_chatbot_reply(reply, lang):
 @csrf_exempt
 def send_verification_email(request):
 
-    # ✅ Handle CORS preflight
+    
     if request.method == "OPTIONS":
         return JsonResponse({"message": "OK"}, status=200)
 
@@ -163,7 +163,7 @@ def send_verification_email(request):
         return JsonResponse({"error": "Invalid request method"}, status=405)
 
     try:
-        # ✅ SAFE JSON parsing
+       
         try:
             data = json.loads(request.body.decode("utf-8"))
         except:
@@ -255,10 +255,10 @@ def generate_qr(request):
     if not phone:
         return JsonResponse({"error": "Phone number is required"}, status=400)
 
-    # 🔥 DELETE OLD RECORD (IMPORTANT)
+    
     PhoneVerification.objects.filter(phone=phone).delete()
 
-    # ✅ CREATE NEW SECRET
+    
     secret = pyotp.random_base32()
 
     PhoneVerification.objects.create(
@@ -309,7 +309,7 @@ def verify_otp(request):
 
         totp = pyotp.TOTP(obj.secret)
 
-        # 🔥 FINAL FIX (handles delay + sync issues)
+       
         if totp.verify(otp, valid_window=5):
             obj.verified = True
             obj.save()
@@ -455,7 +455,7 @@ def save_profile(request):
 
         victim, created = Victim.objects.get_or_create(email=email)
 
-        # ✅ SAFE FIELD UPDATE (Including React Form fields)
+       
         victim.first_name = data.get("first_name", victim.first_name)
         victim.last_name = data.get("last_name", victim.last_name)
         victim.phone = data.get("phone", victim.phone)
@@ -527,7 +527,7 @@ def save_complaint(request):
 
             time_value = data.get("time")
 
-            # ✅ FIX invalid time
+            
             if not time_value or "NaN" in time_value:
                 time_value = datetime.now().strftime("%H:%M:%S")
 
@@ -538,7 +538,7 @@ def save_complaint(request):
                 description=data.get("description"),
                 location=data.get("location"),
                 date=data.get("date"),
-                time=time_value,   # ✅ fixed
+                time=time_value,   
                 delay=data.get("delay", "No"),
                 status=data.get("status", "Pending"),
                 notification="",
@@ -755,7 +755,7 @@ def save_suspect(request):
             complaint = Complaint.objects.get(complaint_id=complaint_id)
 
             Suspect.objects.create(
-                complaint=complaint,   # ✅ LINK
+                complaint=complaint, 
                 gender=data.get("gender"),
                 age=data.get("age"),
                 faceShape=data.get("faceShape"),
@@ -785,7 +785,7 @@ def get_suspects(request):
 
     data = []
     for s in suspects:
-        if s.complaint:   # ✅ ensure relation exists
+        if s.complaint:   
             sketch_url = None
             if s.sketch_image and hasattr(s.sketch_image, 'url'):
                 sketch_url = s.sketch_image.url
@@ -812,15 +812,15 @@ def get_suspect_by_complaint(request, complaint_id):
         "age": suspect.age,
         "faceShape": suspect.faceShape,
         "skinTone": suspect.skinTone,
-        "forehead": suspect.forehead,      # ✅ ADD
+        "forehead": suspect.forehead,      
         "hairType": suspect.hairType,
         "hairColor": suspect.hairColor,
         "eyeShape": suspect.eyeShape,
         "eyeColor": suspect.eyeColor,
-        "eyebrow": suspect.eyebrow,        # ✅ ADD
-        "noseSize": suspect.noseSize,      # ✅ ADD
-        "noseShape": suspect.noseShape,    # ✅ ADD
-        "lipType": suspect.lipType,        # ✅ ADD
+        "eyebrow": suspect.eyebrow,       
+        "noseSize": suspect.noseSize,      
+        "noseShape": suspect.noseShape,   
+        "lipType": suspect.lipType,        
         "beard": suspect.beard,
         "mustache": suspect.mustache,
         "identifiers": suspect.identifiers

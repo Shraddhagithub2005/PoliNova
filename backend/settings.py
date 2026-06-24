@@ -69,8 +69,8 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # Database
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'smartfir_db',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
         'USER': 'root',
         'PASSWORD': 'Root@123',
         'HOST': 'localhost',
@@ -98,7 +98,7 @@ MEDIA_URL = '/media/'
 import os
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-# ✅ Email (using Gmail SMTP)
+
 EMAIL_BACKEND = "fir.email_backend.NoVerifySMTPBackend"
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587

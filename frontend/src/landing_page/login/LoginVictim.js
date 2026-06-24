@@ -20,7 +20,7 @@ function LoginVictim() {
     setError("");
 
     try {
-      // 🔗 API call to Django backend
+      
       const response = await fetch("http://127.0.0.1:8000/api/login-victim/", {
         method: "POST",
         headers: {

@@ -46,7 +46,7 @@ function ForensicSketch() {
                         </tr>
                     ) : (
                         suspects.map((s, index) => {
-                            const complaintId = s.complaint_id; // ✅ FIXED KEY
+                            const complaintId = s.complaint_id; 
 
                             return (
                                 <tr key={index}>

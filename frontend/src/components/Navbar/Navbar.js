@@ -13,15 +13,16 @@ function Navbar() {
         height: "70px",
         zIndex: 1300,
         backgroundColor: "brown"
+        
       }}
     >
       <div className="container-fluid">
 
         <Link className="navbar-brand" to="/">
           <img
-            src="media/images/logo.jpg"
+            src="media/images/Logo.jpeg"
             alt="Logo"
-            style={{ width: "60px", marginLeft: "20px" }}
+            style={{height:"45px", width: "100px", marginLeft: "20px" }}
           />
         </Link>
 
@@ -38,21 +39,22 @@ function Navbar() {
 
           {/* Left Links */}
           <div className="navbar-nav">
-            <Link className="nav-link" to="/">Home</Link>
-            <Link className="nav-link" to="/AboutPage">About</Link>
-            <Link className="nav-link" to="/ContactPage">Contact</Link>
+            <Link className="nav-link" to="/" style={{ backgroundColor: "brown",color:"white" }}>Home</Link>
+            <Link className="nav-link" to="/AboutPage" style={{ backgroundColor: "brown",color:"white" }}>About</Link>
+            <Link className="nav-link" to="/ContactPage" style={{ backgroundColor: "brown",color:"white" }}>Contact</Link>
 
             <div className="nav dropdown">
               <button
                 className="nav-link dropdown-toggle"
                 data-bs-toggle="dropdown"
+                style={{ backgroundColor: "brown",color:"white" }}
               >
                 Select Role
               </button>
 
               <ul className="dropdown-menu" style={{ backgroundColor: "brown" }}>
-                <li><Link className="dropdown-item" to="/Signup">Victim</Link></li>
-                <li><Link className="dropdown-item" to="/LoginPolice">Police</Link></li>
+                <li><Link className="dropdown-item" to="/Signup" style={{ backgroundColor: "brown",color:"white" }} >Victim</Link></li>
+                <li><Link className="dropdown-item" to="/LoginPolice" style={{ backgroundColor: "brown",color:"white" }}>Police</Link></li>
               </ul>
             </div>
           </div>
@@ -60,7 +62,7 @@ function Navbar() {
           {/* Right Side Logout */}
           <div className="ms-auto">
             <Link className="btn " to="/Logout"
-            style={{backgroundColor:"brown"}}>
+            style={{backgroundColor:"brown", color:"white"}}>
               Logout
             </Link>
           </div>

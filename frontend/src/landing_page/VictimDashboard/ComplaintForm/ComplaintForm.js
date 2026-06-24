@@ -68,7 +68,6 @@ function ComplaintForm() {
     }));
   };
 
-  // ✅ Updated Validation for Suspect Details
   const handleSuspectNext = async () => {
   const requiredFields = [
     "gender", "age", "faceShape", "skinTone", "forehead", 
@@ -99,7 +98,7 @@ function ComplaintForm() {
       },
       body: JSON.stringify({
         ...suspectDetails,
-        complaint_id: complaintId   // ✅ IMPORTANT
+        complaint_id: complaintId  
       }),
     });
 
@@ -181,7 +180,7 @@ function ComplaintForm() {
       if (res.ok) {
         setSubmitted(true);
 
-        // ✅ SAVE complaint_id from backend
+        
         setComplaintId(data.complaint_id);
 
         setText("");
@@ -212,11 +211,11 @@ function ComplaintForm() {
             <i className="bi bi-person-badge"></i> Suspect Details
           </button>
         </li>
-        <li className="nav-item">
+        {/* <li className="nav-item">
           <button className={`nav-link ${activeTab === "complainant" ? "active" : ""}`} onClick={() => handleTabClick("complainant")}>
             <i className="bi bi-person"></i> Complainant Details
           </button>
-        </li>
+        </li> */}
         <li className="nav-item">
           <button className={`nav-link ${activeTab === "preview" ? "active" : ""}`} onClick={() => handleTabClick("preview")}>
             <i className="bi bi-pencil-square"></i> Preview & Submit

@@ -77,17 +77,15 @@ function VictimNavbar() {
             {t("checkStatus")} <FaChevronRight size={14} />
           </Link>
 
-          <Link className="list-group-item d-flex justify-content-between align-items-center" to="/VictimDashboard/ComplaintWithdraw">
+          {/* <Link className="list-group-item d-flex justify-content-between align-items-center" to="/VictimDashboard/ComplaintWithdraw">
             {t("complaintWithdraw")} <FaChevronRight size={14} />
+          </Link> */}
+
+          <Link className="list-group-item d-flex justify-content-between align-items-center" to="/VictimDashboard/VictimContactUs">
+            {t("Contact Us")} <FaChevronRight size={14} />
           </Link>
 
-          <Link className="list-group-item d-flex justify-content-between align-items-center" to="/VictimDashboard/Learn">
-            {t("learn")} <FaChevronRight size={14} />
-          </Link>
-
-          <Link className="list-group-item d-flex justify-content-between align-items-center" to="/VictimDashboard/Chatbot">
-            {t("chatbot")} <FaChevronRight size={14} />
-          </Link>
+          
 
           <li
             className="list-group-item d-flex justify-content-between align-items-center"

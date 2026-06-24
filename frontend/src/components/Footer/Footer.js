@@ -8,7 +8,7 @@ function Footer() {
     >
       <div className="row mt-2 p-5">
         <div className="col" style={{ marginRight: "20px" }}>
-          <img src="media/images/logo.jpg" style={{ width: "20%" }} />
+          <img src="media/images/Logo.jpeg" style={{ height:"45px", width: "100px" }} />
           <p>
             <br />
             &copy; Content owned by PoliNova, an initiative towards Smart

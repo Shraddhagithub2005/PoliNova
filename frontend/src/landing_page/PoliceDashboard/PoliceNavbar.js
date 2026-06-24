@@ -71,16 +71,9 @@ function PoliceNavbar() {
             {t("forensicSketch")} <FaChevronRight size={14} />
           </Link>
 
-          <Link className="list-group-item d-flex justify-content-between align-items-center" to="/PoliceDashboard/LegalAssist">
-            {t("legalAssistantMenu")} <FaChevronRight size={14} />
-          </Link>
-
-          <Link className="list-group-item d-flex justify-content-between align-items-center" to="/PoliceDashboard/Status">
-            {t("statusTitle")} <FaChevronRight size={14} />
-          </Link>
-
-          <Link className="list-group-item d-flex justify-content-between align-items-center" to="/PoliceDashboard/LearnForPolice">
-            {t("learnForPoliceTitle")} <FaChevronRight size={14} />
+         
+          <Link className="list-group-item d-flex justify-content-between align-items-center" to="/PoliceDashboard/ContactUs">
+            {t("ContactUs")} <FaChevronRight size={14} />
           </Link>
 
           <li

@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 
 function SuspectDetails() {
   const { id: complaint_id } = useParams();
-  const navigate = useNavigate(); // ✅ added
+  const navigate = useNavigate(); 
 
   const [suspect, setSuspect] = useState(null);
   const [error, setError] = useState("");
@@ -38,7 +38,7 @@ function SuspectDetails() {
   return (
     <div className="container mt-4">
 
-      {/* ✅ BACK BUTTON */}
+      
       <button
         onClick={() => navigate("/PoliceDashboard/ForensicSketch")}
         style={{

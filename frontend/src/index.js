@@ -24,7 +24,7 @@ import LegalAssist from "./landing_page/PoliceDashboard/LegalAssist";
 import FIRList from "./landing_page/PoliceDashboard/FIRList";
 import ComplaintDetails from "./landing_page/PoliceDashboard/ComplaintDetails";
 import Status from "./landing_page/PoliceDashboard/Status";
-import LearnForPolice from "./landing_page/PoliceDashboard/LearnForPolice";
+import ContactUs from "./landing_page/PoliceDashboard/ContactUs";
 
 import VictimDashboard from "./landing_page/VictimDashboard/VictimDashboard";
 import Chatbot from "./landing_page/VictimDashboard/Chatbot";
@@ -33,13 +33,12 @@ import ReportComplaint from "./landing_page/VictimDashboard/ComplaintForm/Report
 import CheckStatus from "./landing_page/VictimDashboard/ComplaintStatus/CheckStatus";
 import ComplaintWithdraw from "./landing_page/VictimDashboard/ComplaintWithdraw";
 import MultiLanguageSupport from "./landing_page/VictimDashboard/MultiLanguageSupport";
-import Learn from "./landing_page/VictimDashboard/Learn";
+import VictimContactUs from "./landing_page/VictimDashboard/VictimContactUs";
 import UserProfile from "./landing_page/VictimDashboard/UserProfile";
 import Rules_Regulations from "./landing_page/VictimDashboard/ComplaintForm/Rules_Regulations";
 import MandatoryList from "./landing_page/VictimDashboard/ComplaintForm/MandatoryList";
 import ComplaintForm from "./landing_page/VictimDashboard/ComplaintForm/ComplaintForm";
 
-// ✅ FIX: make sure this path is correct
 import SuspectDetails from "./SuspectDetails";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
@@ -59,7 +58,7 @@ root.render(
       <Route path="/LoginPolice" element={<LoginPolice />} />
       <Route path="/LoginVictim" element={<LoginVictim />} />
 
-      {/* ✅ POLICE DASHBOARD */}
+      
       <Route path="/PoliceDashboard" element={<PoliceDashboard />}>
         <Route index element={<FIRList />} />
         <Route path="complaint/:complaint_id" element={<ComplaintDetails />} />
@@ -68,16 +67,16 @@ root.render(
         <Route path="LegalAssist" element={<LegalAssist />} />
         <Route path="Language" element={<Language />} />
         <Route path="Status" element={<Status />} />
-        <Route path="LearnForPolice" element={<LearnForPolice />} />
+        <Route path="ContactUs" element={<ContactUs />} />
 
-        {/* ✅ FIX: move inside dashboard */}
+       
         <Route path="suspect/:id" element={<SuspectDetails />} /></Route>
         <Route path="/suspect/:id" element={<SuspectDetails />} />
 
 
       <Route path="/NotFound" element={<NotFound />} />
 
-      {/* ✅ VICTIM DASHBOARD */}
+      
       <Route path="/VictimDashboard" element={<VictimDashboard />}>
         <Route index element={<UserProfileForm />} />
         <Route path="Chatbot" element={<Chatbot />} />
@@ -87,7 +86,7 @@ root.render(
         <Route path="MandatoryList" element={<MandatoryList />} />
         <Route path="CheckStatus" element={<CheckStatus />} />
         <Route path="ComplaintWithdraw" element={<ComplaintWithdraw />} />
-        <Route path="Learn" element={<Learn />} />
+        <Route path="VictimContactUs" element={<VictimContactUs />} />
         <Route path="MultiLanguageSupport" element={<MultiLanguageSupport />} />
         <Route path="UserProfile" element={<UserProfile />} />
       </Route>

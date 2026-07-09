@@ -35,7 +35,7 @@ import ComplaintWithdraw from "./landing_page/VictimDashboard/ComplaintWithdraw"
 import MultiLanguageSupport from "./landing_page/VictimDashboard/MultiLanguageSupport";
 import VictimContactUs from "./landing_page/VictimDashboard/VictimContactUs";
 import UserProfile from "./landing_page/VictimDashboard/UserProfile";
-import Rules_Regulations from "./landing_page/VictimDashboard/ComplaintForm/Rules_Regulations";
+import RulesRegulations from "./landing_page/VictimDashboard/ComplaintForm/Rules_Regulations";
 import MandatoryList from "./landing_page/VictimDashboard/ComplaintForm/MandatoryList";
 import ComplaintForm from "./landing_page/VictimDashboard/ComplaintForm/ComplaintForm";
 
@@ -81,7 +81,10 @@ root.render(
         <Route index element={<UserProfileForm />} />
         <Route path="Chatbot" element={<Chatbot />} />
         <Route path="ReportComplaint" element={<ReportComplaint />} />
-        <Route path="Rules_Regulations" element={<Rules_Regulations />} />
+        <Route
+  path="Rules_Regulations"
+  element={<RulesRegulations />}
+/>
         <Route path="ComplaintForm" element={<ComplaintForm />} />
         <Route path="MandatoryList" element={<MandatoryList />} />
         <Route path="CheckStatus" element={<CheckStatus />} />

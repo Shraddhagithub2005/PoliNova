@@ -1,3 +1,7 @@
+import os
+
+DEBUG = os.environ.get("DEBUG", "False") == "True"
+
 """
 Django settings for backend project.
 """
@@ -41,7 +45,10 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOWED_ORIGINS = [
+    "https://your-frontend.vercel.app",
+    "http://localhost:3000",
+]
 
 CSRF_TRUSTED_ORIGINS = [
     "https://polinova-1-z7uj.onrender.com/",

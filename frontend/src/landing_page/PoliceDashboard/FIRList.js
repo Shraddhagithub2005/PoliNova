@@ -32,8 +32,9 @@ function FIRList() {
   };
 
   useEffect(() => {
-    loadComplaints();
-  }, [i18n.language]);
+  loadComplaints();
+// eslint-disable-next-line react-hooks/exhaustive-deps
+}, [i18n.language]);
 
   const handleStatusUpdate = async (complaintId, status) => {
     try {

@@ -17,10 +17,7 @@ function Hero() {
     }
   ];
 
-  const handleCall = (phone) => {
-    window.location.href = `tel:${phone}`;
-  };
-
+  
   const handleEmail = (email) => {
     window.location.href = `mailto:${email}`;
   };
